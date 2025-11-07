@@ -1,6 +1,6 @@
-# KOR E-commerce Storefront
+# 🛍️ Medusa Storefront - Sistema con Backup Automático
 
-Frontend de e-commerce para KOR Generadores, construido con Next.js 15 y conectado a Medusa.js v2 backend.
+Frontend de e-commerce construido con Next.js 16 y Medusa.js v2 con sistema integrado de backup automático y versionado en GitHub.
 
 ## 📋 Descripción
 
@@ -16,11 +16,32 @@ Aplicación web moderna para la venta de generadores eléctricos industriales, c
 - **State Management**: TanStack Query
 - **Package Manager**: pnpm
 
-## 📦 Instalación
+## 🚀 Quick Start
+
+### Primera vez
 
 ```bash
-# Instalar dependencias
-pnpm install
+# 1. Clonar el repositorio
+git clone https://github.com/ivankorzy25/medusa-storefront.git
+cd medusa-storefront
+
+# 2. Ejecutar setup automático
+npm run setup
+
+# 3. Configurar .env.local con tus valores
+
+# 4. Iniciar el servidor
+npm run dev
+```
+
+### Desarrollo diario
+
+```bash
+# Iniciar servidor
+npm run dev
+
+# Después de hacer cambios, guardar backup
+npm run backup
 ```
 
 ## ⚙️ Configuración
@@ -37,24 +58,20 @@ NEXT_PUBLIC_BASE_URL=http://192.168.1.100:3000
 NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=tu_publishable_key
 ```
 
-## 🚀 Desarrollo
+## 📦 Comandos Disponibles
 
-```bash
-# Iniciar servidor de desarrollo
-pnpm dev
-```
+### Desarrollo
+- `npm run dev` - Inicia el servidor en modo desarrollo (puerto 3000)
+- `npm run build` - Construye el proyecto para producción
+- `npm run start` - Inicia el servidor en modo producción
+- `npm run lint` - Ejecuta el linter
 
-Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
+### Backup y Restauración
+- `npm run backup` - **Backup completo** (código + builds + push a GitHub)
+- `npm run backup:watch` - Watcher automático que monitorea cambios
+- `npm run setup` - Setup completo desde GitHub
 
-## 🏗️ Build
-
-```bash
-# Compilar para producción
-pnpm build
-
-# Iniciar en modo producción
-pnpm start
-```
+> 📖 **Documentación completa de backup:** Ver [COMO-USAR.md](./COMO-USAR.md)
 
 ## 📁 Estructura del Proyecto
 
@@ -93,11 +110,24 @@ El storefront se conecta al backend Medusa.js mediante:
 - 🚧 Checkout (en desarrollo)
 - 🚧 Sistema de autenticación (en desarrollo)
 
-## 📝 Licencia
+## 🔗 Repositorios Relacionados
 
-Privado - KOR Generadores © 2025
+Este proyecto es parte del ecosistema Medusa E-commerce:
+
+- **Backend**: https://github.com/ivankorzy25/medusa-backend (API + DB + Admin Dashboard)
+- **Storefront**: https://github.com/ivankorzy25/medusa-storefront (Frontend de tienda - este repo)
+
+### ✅ Ventajas de la Separación:
+- Aislamiento de problemas (frontend/backend independientes)
+- Desarrollo paralelo sin conflictos
+- Deploys separados
+- Historial de commits limpio y organizado
+- Escalabilidad independiente
+
+## 🆘 Troubleshooting
+
+Ver documentación completa en [COMO-USAR.md](./COMO-USAR.md)
 
 ---
 
-**Proyecto**: KOR E-commerce
-**Desarrollado con**: Claude Code
+**Generado con ❤️ usando Next.js, Medusa.js y Claude Code**
