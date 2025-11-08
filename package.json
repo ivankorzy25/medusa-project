@@ -38,6 +38,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@medusajs/medusa-js": "^6.1.10",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -45,6 +46,7 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
+    "form-data": "^4.0.4",
     "postcss": "^8.5.6",
     "tailwindcss": "^4",
     "typescript": "^5"
