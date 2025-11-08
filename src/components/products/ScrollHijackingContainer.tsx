@@ -18,43 +18,25 @@ export function ScrollHijackingContainer({
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let ticking = false;
-
     const handleWheel = (e: WheelEvent) => {
-      if (!containerRef.current || !imageRef.current || !contentRef.current) return;
+      if (!contentRef.current) return;
 
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const imageRect = imageRef.current!.getBoundingClientRect();
-          const contentContainer = contentRef.current!;
+      const contentContainer = contentRef.current;
+      const hasScrollableContent = contentContainer.scrollHeight > contentContainer.clientHeight;
 
-          // Verificar si la imagen está completamente visible y sticky
-          const imageIsSticky = imageRect.top <= 96 && imageRect.top >= 0; // 96px = top-24 (6rem)
-          const imageFullyVisible = imageRect.bottom > 0 && imageRect.top < window.innerHeight;
+      if (!hasScrollableContent) return;
 
-          // Verificar si el contenido tiene scroll disponible
-          const hasScrollableContent = contentContainer.scrollHeight > contentContainer.clientHeight;
-          const isAtTop = contentContainer.scrollTop <= 0;
-          const isAtBottom = contentContainer.scrollTop + contentContainer.clientHeight >= contentContainer.scrollHeight - 5;
+      const isAtTop = contentContainer.scrollTop <= 0;
+      const isAtBottom = contentContainer.scrollTop + contentContainer.clientHeight >= contentContainer.scrollHeight - 1;
 
-          // Solo hijack si la imagen está sticky y hay contenido para scrollear
-          if (imageIsSticky && imageFullyVisible && hasScrollableContent) {
-            // Scrolleando hacia abajo y no está al final
-            if (e.deltaY > 0 && !isAtBottom) {
-              e.preventDefault();
-              contentContainer.scrollTop += e.deltaY;
-            }
-            // Scrolleando hacia arriba y no está al principio
-            else if (e.deltaY < 0 && !isAtTop) {
-              e.preventDefault();
-              contentContainer.scrollTop += e.deltaY;
-            }
-          }
+      // Interceptar scroll solo si el contenedor tiene contenido scrolleable
+      // y no estamos en los límites intentando seguir en esa dirección
+      if ((e.deltaY > 0 && !isAtBottom) || (e.deltaY < 0 && !isAtTop)) {
+        e.preventDefault();
 
-          ticking = false;
-        });
-
-        ticking = true;
+        // Scroll suave con easing
+        const scrollAmount = e.deltaY * 0.8; // Factor de suavizado
+        contentContainer.scrollTop += scrollAmount;
       }
     };
 
@@ -93,6 +75,7 @@ export function ScrollHijackingContainer({
             maxHeight: "calc(100vh - 120px)",
             scrollbarWidth: "thin",
             scrollbarColor: "#CBD5E0 transparent",
+            scrollBehavior: "auto", // Scroll suave
           }}
         >
           <div className="flex gap-8">
