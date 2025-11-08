@@ -24,6 +24,12 @@ interface PriceDisplayProps {
   pricingConfig?: PricingConfig;
   descuentoPorcentaje?: number;
   precioAnterior?: number;
+  financiacionDisponible?: boolean;
+  planesFinanciacion?: Array<{
+    cuotas: number;
+    interes: number;
+    costoPorCuota: number;
+  }>;
 }
 
 type ExchangeRateType = "oficial" | "blue" | "mep" | "ccl" | "mayorista" | "cripto" | "tarjeta";
@@ -38,7 +44,7 @@ const EXCHANGE_RATE_LABELS: Record<ExchangeRateType, { label: string; shortLabel
   tarjeta: { label: "Dólar Tarjeta", shortLabel: "Tarjeta" },
 };
 
-export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorcentaje, precioAnterior }: PriceDisplayProps) {
+export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorcentaje, precioAnterior, financiacionDisponible, planesFinanciacion }: PriceDisplayProps) {
   // Determinar tipo de cambio según producto - leer desde metadata
   const tipoCambio: ExchangeRateType = pricingConfig?.currency_type === "usd_blue" ? "blue" : "oficial";
 
@@ -110,35 +116,19 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
     fetchData();
   }, [productId, precioListaUSD, bonificacion, descuentoContado]);
 
-  const formatPrice = (price: number): string => {
-    return new Intl.NumberFormat("es-AR", {
-      style: "currency",
-      currency: "ARS",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
-
-  const formatPriceNumber = (price: number): string => {
+  // Formato ARS: $ 42.171.104 (puntos para miles)
+  const formatARS = (price: number): string => {
     return new Intl.NumberFormat("es-AR", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price);
   };
 
+  // Formato USD: 26.411,50 (coma decimal, punto miles)
   const formatUSD = (price: number): string => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
-
-  const formatUSDNumber = (price: number): string => {
-    return new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+    return new Intl.NumberFormat("es-AR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(price);
   };
 
@@ -184,7 +174,7 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
                   textDecoration: 'line-through',
                   fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                 }}>
-                  ARS {formatPriceNumber(precioAnterior
+                  $ {formatARS(precioAnterior
                     ? Math.round(precioAnterior)
                     : Math.round(data.escenarios.publico.con_iva / (1 - descuentoPorcentaje / 100))
                   )}
@@ -199,7 +189,7 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
                 fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',
                 fontWeight: 300
               }}>
-                ARS {formatPriceNumber(data.escenarios.publico.con_iva)}
+                $ {formatARS(data.escenarios.publico.con_iva)}
               </span>
               {/* Descuento - solo si existe */}
               {descuentoPorcentaje && descuentoPorcentaje > 0 && (
@@ -213,8 +203,18 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
               )}
             </div>
 
+            {/* Financiación - solo si está disponible */}
+            {financiacionDisponible && planesFinanciacion && planesFinanciacion.length > 0 && planesFinanciacion[0].interes <= 0.15 && (
+              <p className="text-[14px] font-normal mb-2" style={{
+                color: 'rgba(0, 0, 0, 0.9)',
+                fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+              }}>
+                Mismo precio en {planesFinanciacion[0].cuotas} cuotas de $ {formatARS(planesFinanciacion[0].costoPorCuota)}
+              </p>
+            )}
+
             <p className="text-xs" style={{ color: 'rgba(0, 0, 0, 0.55)' }}>
-              USD {formatUSDNumber(precioListaUSD)} + IVA {ivaPorcentaje}%
+              USD {formatUSD(precioListaUSD)} + IVA {ivaPorcentaje}%
             </p>
           </div>
 
@@ -325,29 +325,29 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
                 <div className="space-y-2 bg-white rounded p-2">
                   <div className="flex justify-between text-xs gap-2">
                     <span className="text-gray-600">Precio base</span>
-                    <span className="font-semibold text-gray-900 text-right">USD {formatUSDNumber(precioListaUSD)}</span>
+                    <span className="font-semibold text-gray-900 text-right">USD {formatUSD(precioListaUSD)}</span>
                   </div>
 
                   <div className="flex justify-between text-xs gap-2">
                     <span className="text-gray-600">Cotización ({selectedRateLabel.shortLabel})</span>
-                    <span className="font-semibold text-gray-900 text-right">ARS {selectedRateData?.venta.toFixed(2)}</span>
+                    <span className="font-semibold text-gray-900 text-right">$ {selectedRateData?.venta.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between text-xs gap-2">
                     <span className="text-gray-600">Precio (sin IVA)</span>
-                    <span className="font-semibold text-gray-900 text-right">ARS {formatPriceNumber(data.escenarios.publico.sin_iva)}</span>
+                    <span className="font-semibold text-gray-900 text-right">$ {formatARS(data.escenarios.publico.sin_iva)}</span>
                   </div>
 
                   {data.escenarios.publico.con_iva > data.escenarios.publico.sin_iva && (
                     <div className="flex justify-between text-xs gap-2">
                       <span className="text-gray-600">IVA ({ivaPorcentaje}%)</span>
-                      <span className="font-semibold text-gray-900 text-right">ARS {formatPriceNumber(data.escenarios.publico.con_iva - data.escenarios.publico.sin_iva)}</span>
+                      <span className="font-semibold text-gray-900 text-right">$ {formatARS(data.escenarios.publico.con_iva - data.escenarios.publico.sin_iva)}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between text-xs pt-2 border-t border-gray-200 gap-2">
                     <span className="font-bold text-gray-900">Total</span>
-                    <span className="font-bold text-gray-900 text-right">ARS {formatPriceNumber(data.escenarios.publico.con_iva)}</span>
+                    <span className="font-bold text-gray-900 text-right">$ {formatARS(data.escenarios.publico.con_iva)}</span>
                   </div>
                 </div>
               </div>

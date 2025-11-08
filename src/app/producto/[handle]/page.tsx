@@ -405,6 +405,8 @@ export default async function ProductPage({
                 pricingConfig={product.metadata.pricing_config}
                 descuentoPorcentaje={product.metadata.descuento_porcentaje}
                 precioAnterior={product.metadata.precio_anterior}
+                financiacionDisponible={product.metadata.financiacion_disponible}
+                planesFinanciacion={product.metadata.planes_financiacion}
               />
             }
           />
