@@ -184,7 +184,7 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
                   textDecoration: 'line-through',
                   fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                 }}>
-                  ${formatPriceNumber(precioAnterior
+                  ARS ${formatPriceNumber(precioAnterior
                     ? Math.round(precioAnterior)
                     : Math.round(data.escenarios.publico.con_iva / (1 - descuentoPorcentaje / 100))
                   )}
@@ -199,7 +199,7 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
                 fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',
                 fontWeight: 300
               }}>
-                ${formatPriceNumber(data.escenarios.publico.con_iva)}
+                ARS ${formatPriceNumber(data.escenarios.publico.con_iva)}
               </span>
               {/* Descuento - solo si existe */}
               {descuentoPorcentaje && descuentoPorcentaje > 0 && (
@@ -214,7 +214,7 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
             </div>
 
             <p className="text-xs" style={{ color: 'rgba(0, 0, 0, 0.55)' }}>
-              {formatUSD(precioListaUSD)} + IVA {ivaPorcentaje}%
+              USD {formatUSD(precioListaUSD)} + IVA {ivaPorcentaje}%
             </p>
           </div>
 
@@ -324,30 +324,30 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
 
                 <div className="space-y-2 bg-white rounded p-2">
                   <div className="flex justify-between text-xs gap-2">
-                    <span className="text-gray-600">Precio base USD</span>
-                    <span className="font-semibold text-gray-900 text-right">{formatUSD(precioListaUSD)}</span>
+                    <span className="text-gray-600">Precio base</span>
+                    <span className="font-semibold text-gray-900 text-right">USD {formatUSD(precioListaUSD)}</span>
                   </div>
 
                   <div className="flex justify-between text-xs gap-2">
                     <span className="text-gray-600">Cotización ({selectedRateLabel.shortLabel})</span>
-                    <span className="font-semibold text-gray-900 text-right">${selectedRateData?.venta.toFixed(2)}</span>
+                    <span className="font-semibold text-gray-900 text-right">ARS ${selectedRateData?.venta.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between text-xs gap-2">
-                    <span className="text-gray-600">Precio ARS (sin IVA)</span>
-                    <span className="font-semibold text-gray-900 text-right">$ {formatPriceNumber(data.escenarios.publico.sin_iva)}</span>
+                    <span className="text-gray-600">Precio (sin IVA)</span>
+                    <span className="font-semibold text-gray-900 text-right">ARS $ {formatPriceNumber(data.escenarios.publico.sin_iva)}</span>
                   </div>
 
                   {data.escenarios.publico.con_iva > data.escenarios.publico.sin_iva && (
                     <div className="flex justify-between text-xs gap-2">
                       <span className="text-gray-600">IVA ({ivaPorcentaje}%)</span>
-                      <span className="font-semibold text-gray-900 text-right">$ {formatPriceNumber(data.escenarios.publico.con_iva - data.escenarios.publico.sin_iva)}</span>
+                      <span className="font-semibold text-gray-900 text-right">ARS $ {formatPriceNumber(data.escenarios.publico.con_iva - data.escenarios.publico.sin_iva)}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between text-xs pt-2 border-t border-gray-200 gap-2">
                     <span className="font-bold text-gray-900">Total</span>
-                    <span className="font-bold text-gray-900 text-right">$ {formatPriceNumber(data.escenarios.publico.con_iva)}</span>
+                    <span className="font-bold text-gray-900 text-right">ARS $ {formatPriceNumber(data.escenarios.publico.con_iva)}</span>
                   </div>
                 </div>
               </div>
