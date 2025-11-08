@@ -15,17 +15,36 @@ const DEFAULT_REGION_ID = "reg_01K9FZ96V1AT4PGR95NE8VYZ8N"
  */
 export async function getProductByHandle(handle: string, regionId: string = DEFAULT_REGION_ID) {
   try {
+    // First get the product with basic info
     const response = await medusa.store.product.list({
       handle,
       region_id: regionId,
-      fields: "*variants,*variants.calculated_price,*images,*metadata",
+      fields: "*variants,*variants.calculated_price,*images",
     })
 
     if (!response.products || response.products.length === 0) {
       return null
     }
 
-    return response.products[0]
+    const product = response.products[0]
+
+    // Medusa v2 doesn't return metadata by default in store API
+    // We need to fetch it separately using our custom API route that queries the database directly
+    try {
+      const metadataResponse = await fetch(`http://localhost:3000/api/product-metadata/${product.id}`)
+
+      if (metadataResponse.ok) {
+        const data = await metadataResponse.json()
+        if (data.metadata) {
+          product.metadata = data.metadata
+        }
+      }
+    } catch (metadataError) {
+      console.warn("Could not fetch metadata:", metadataError)
+      // Continue without metadata rather than failing
+    }
+
+    return product
   } catch (error) {
     console.error("Error fetching product:", error)
     return null

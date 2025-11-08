@@ -1,0 +1,162 @@
+{
+  "PLANTILLA_METADATA_PRODUCTO_GENERADOR": {
+    "INSTRUCCIONES": "Copia este JSON y reemplaza los valores según la ficha técnica del producto",
+    "VERSION": "2.0 - Optimizada para 'Lo que tenés que saber'",
+
+    "CAMPOS_QUE_APARECEN_EN_LO_QUE_TENES_QUE_SABER": {
+      "NOTA": "Estos 13 campos se mostrarán automáticamente en la sección principal del producto",
+
+      "motor_marca": "Cummins",
+      "motor_modelo": "6CTAA8.3-G2",
+
+      "potencia_standby_kva": "200",
+      "potencia_standby_kw": "160",
+      "potencia_prime_kva": "180",
+      "potencia_prime_kw": "144",
+
+      "alternador_marca": "Stamford",
+      "alternador_modelo": "HCI544D",
+
+      "voltaje_salida": "220/380V",
+      "fases": "Trifásico",
+      "frecuencia": "50/60Hz",
+
+      "combustible_capacidad_tanque": "400",
+      "autonomia_horas_75_carga": "11.3",
+
+      "motor_cilindros": "6",
+      "motor_tipo_cilindros": "En línea",
+      "motor_aspiracion": "Turboalimentado con aftercooler",
+      "tipo_refrigeracion": "Agua",
+
+      "panel_control_marca": "Deep Sea",
+      "panel_control_modelo": "DSE7320",
+
+      "tipo_arranque": "Eléctrico"
+    },
+
+    "CAMPOS_PARA_BADGES_SUPERIORES": {
+      "NOTA": "Estos campos controlan los badges de colores que aparecen arriba",
+
+      "combustible_tipo": "Diesel",
+      "tiene_tta": "opcional",
+      "tiene_cabina": false,
+      "nivel_ruido_db": "68"
+    },
+
+    "CAMPOS_PARA_ESPECIFICACIONES_TECNICAS": {
+      "NOTA": "Estos aparecen en el tab 'Especificaciones' pero NO en 'Lo que tenés que saber'",
+
+      "motor_rpm": "1800",
+      "motor_ciclo": "4 tiempos",
+      "motor_consumo_75_carga": "35.5",
+      "motor_capacidad_aceite": "28",
+      "motor_refrigeracion": "Agua",
+      "factor_potencia": "0.8"
+    },
+
+    "CAMPOS_COMERCIALES": {
+      "NOTA": "Información de ventas y stock",
+
+      "estado_producto": "Nuevo",
+      "total_ventas": 0,
+      "total_reviews": 0,
+      "rating_promedio": 0,
+      "es_mas_vendido": false,
+
+      "descuento_porcentaje": 0,
+      "precio_anterior": null,
+
+      "stock_disponible": true,
+      "stock_cantidad": 1,
+
+      "categoria": "Generadores Diesel"
+    },
+
+    "UBICACION_Y_ENVIO": {
+      "ubicacion_envio": {
+        "ciudad": "Florida",
+        "provincia": "Buenos Aires",
+        "texto_completo": "Florida, Buenos Aires"
+      }
+    },
+
+    "FINANCIACION": {
+      "financiacion_disponible": true,
+      "planes_financiacion": [
+        {
+          "cuotas": 3,
+          "interes": 8,
+          "costoPorCuota": 14740000
+        },
+        {
+          "cuotas": 6,
+          "interes": 8,
+          "costoPorCuota": 7570000
+        },
+        {
+          "cuotas": 12,
+          "interes": 12,
+          "costoPorCuota": 4180000
+        }
+      ]
+    },
+
+    "PRICING_CONFIG": {
+      "precio_lista_usd": 26411,
+      "iva_percentage": 10.5,
+      "bonificacion_percentage": 0,
+      "descuento_contado_percentage": 0,
+      "currency_type": "usd_blue",
+      "familia": "Generadores Cummins - Línea CS"
+    }
+  },
+
+  "EJEMPLO_SQL_INSERT": "UPDATE product SET metadata = '[PEGAR_JSON_AQUI]'::jsonb WHERE handle = 'handle-del-producto';",
+
+  "CAMPOS_NATIVOS_MEDUSA": {
+    "NOTA": "NO van en metadata, se cargan directamente en la tabla product",
+    "title": "Generador Diesel Cummins CS200A - 200 KVA Stand-By / 180 KVA Prime",
+    "handle": "cummins-cs200a",
+    "sku": "GEN-CS200A-STD",
+    "weight": "2850",
+    "length": "3200",
+    "width": "1400",
+    "height": "1900",
+    "origin_country": "China",
+    "hs_code": "850211",
+    "mid_code": "GEN-CS200A",
+    "material": "Acero industrial"
+  },
+
+  "GUIA_RAPIDA": {
+    "PASO_1": "Copia este JSON completo",
+    "PASO_2": "Reemplaza TODOS los valores con los de tu ficha técnica",
+    "PASO_3": "Los campos que NO tengas, déjalos vacíos (\"\") o null, NO los borres",
+    "PASO_4": "Ejecuta el script SQL o carga desde Medusa Admin",
+    "PASO_5": "Verifica en el frontend que todo se muestre correctamente"
+  },
+
+  "CAMPOS_OBLIGATORIOS_MINIMOS": [
+    "motor_marca",
+    "motor_modelo",
+    "potencia_standby_kva",
+    "potencia_prime_kva",
+    "alternador_marca",
+    "voltaje_salida",
+    "combustible_tipo",
+    "nivel_ruido_db"
+  ],
+
+  "CAMPOS_MUY_RECOMENDADOS": [
+    "potencia_standby_kw",
+    "potencia_prime_kw",
+    "alternador_modelo",
+    "frecuencia",
+    "fases",
+    "combustible_capacidad_tanque",
+    "tipo_refrigeracion",
+    "panel_control_marca",
+    "panel_control_modelo"
+  ]
+}

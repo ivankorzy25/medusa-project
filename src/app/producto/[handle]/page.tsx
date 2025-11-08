@@ -40,48 +40,8 @@ async function getProductByHandle(handle: string) {
     width: product.width,
     height: product.height,
     origin_country: product.origin_country,
-    metadata: {
-      // Electric specs
-      potencia_standby_kva: product.metadata?.potencia_stand_by ? Number(product.metadata.potencia_stand_by) : undefined,
-      potencia_prime_kva: product.metadata?.potencia_prime ? Number(product.metadata.potencia_prime) : undefined,
-      motor_marca: product.metadata?.motor_marca as string | undefined,
-      motor_modelo: product.metadata?.motor_modelo as string | undefined,
-      alternador_marca: product.metadata?.alternador_marca as string | undefined,
-      alternador_modelo: product.metadata?.alternador_modelo as string | undefined,
-      tipo_refrigeracion: product.metadata?.motor_refrigeracion as string | undefined,
-      voltaje_salida: product.metadata?.voltaje as string | undefined,
-      frecuencia_salida: product.metadata?.frecuencia as string | undefined,
-      capacidad_tanque_l: product.metadata?.combustible_capacidad_tanque ? Number(product.metadata.combustible_capacidad_tanque) : undefined,
-      consumo_75_carga_lh: product.metadata?.motor_consumo_75_carga ? Number(product.metadata.motor_consumo_75_carga) : undefined,
-      rpm_motor: product.metadata?.motor_rpm ? Number(product.metadata.motor_rpm) : undefined,
-      // Pricing config
-      pricing_config: product.metadata?.pricing_config as any | undefined,
-      // Promotional discount
-      descuento_porcentaje: product.metadata?.descuento_porcentaje ? Number(product.metadata.descuento_porcentaje) : undefined,
-      precio_anterior: product.metadata?.precio_anterior ? Number(product.metadata.precio_anterior) : undefined,
-      // Sales tracking
-      total_ventas: product.metadata?.total_ventas ? Number(product.metadata.total_ventas) : undefined,
-      es_mas_vendido: product.metadata?.es_mas_vendido === true || product.metadata?.es_mas_vendido === 'true',
-      categoria: product.metadata?.categoria as string | undefined,
-      // Rating and reviews
-      rating_promedio: product.metadata?.rating_promedio ? Number(product.metadata.rating_promedio) : undefined,
-      total_reviews: product.metadata?.total_reviews ? Number(product.metadata.total_reviews) : undefined,
-      // Product status
-      estado_producto: product.metadata?.estado_producto as string | undefined,
-      // Stock
-      stock_cantidad: product.metadata?.stock_cantidad ? Number(product.metadata.stock_cantidad) : undefined,
-      stock_disponible: product.metadata?.stock_disponible === true || product.metadata?.stock_disponible === 'true',
-      // Shipping location
-      ubicacion_envio: product.metadata?.ubicacion_envio as any | undefined,
-      // Additional product attributes
-      combustible_tipo: product.metadata?.combustible_tipo as string | undefined,
-      tiene_tta: product.metadata?.tiene_tta as string | undefined,
-      tiene_cabina: product.metadata?.tiene_cabina === true || product.metadata?.tiene_cabina === 'true',
-      nivel_ruido_db: product.metadata?.nivel_ruido_db as string | undefined,
-      insonorizacion_tipo: product.metadata?.insonorizacion_tipo as string | undefined,
-      financiacion_disponible: product.metadata?.financiacion_disponible === true || product.metadata?.financiacion_disponible === 'true',
-      planes_financiacion: product.metadata?.planes_financiacion as any[] | undefined,
-    },
+    // Pass metadata directly without remapping - the field names in the database are correct
+    metadata: product.metadata || {},
     images: (product.images || []).map((img: any, index: number) => ({
       id: img.id || String(index),
       url: img.url || "",
@@ -277,8 +237,19 @@ export default async function ProductPage({
             centerContent={
               <div className="space-y-4">
                 {/* Badges estilo MercadoLibre - Dinámicos */}
-                {(product.metadata.es_mas_vendido || (product.metadata.descuento_porcentaje && product.metadata.descuento_porcentaje > 0)) && (
+                {(product.metadata.es_mas_vendido || (product.metadata.descuento_porcentaje > 0) || (product.metadata.estado_producto === 'Nuevo' && (product.metadata.total_ventas === 0 || !product.metadata.total_ventas))) && (
                   <div className="flex flex-wrap gap-2 items-center mb-2">
+                    {/* Badge RECIÉN LLEGADO - para productos nuevos sin ventas */}
+                    {product.metadata.estado_producto === 'Nuevo' && (!product.metadata.total_ventas || product.metadata.total_ventas === 0) && !product.metadata.es_mas_vendido && (
+                      <span className="text-[12px] font-semibold px-2 py-1 rounded" style={{
+                        color: 'rgb(255, 255, 255)',
+                        backgroundColor: '#10B981',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',
+                        fontWeight: 600
+                      }}>
+                        RECIÉN LLEGADO
+                      </span>
+                    )}
                     {/* Badge MÁS VENDIDO - solo si tiene flag en metadata */}
                     {product.metadata.es_mas_vendido && (
                       <span className="text-[12px] font-semibold px-2 py-1 rounded" style={{
@@ -291,7 +262,7 @@ export default async function ProductPage({
                       </span>
                     )}
                     {/* Badge OFERTA - solo si hay descuento */}
-                    {product.metadata.descuento_porcentaje && product.metadata.descuento_porcentaje > 0 && (
+                    {product.metadata.descuento_porcentaje > 0 && (
                       <span className="text-[12px] font-semibold px-2 py-1 rounded" style={{
                         color: 'rgb(255, 255, 255)',
                         backgroundColor: '#3483FA',
@@ -311,7 +282,7 @@ export default async function ProductPage({
                     fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                   }}>
                     {product.metadata.estado_producto || 'Nuevo'}
-                    {product.metadata.total_ventas && product.metadata.total_ventas > 0 && (
+                    {product.metadata.total_ventas > 0 && (
                       <> | +{product.metadata.total_ventas} vendidos</>
                     )}
                   </p>
@@ -327,7 +298,7 @@ export default async function ProductPage({
                   </h1>
 
                   {/* Rating estilo MercadoLibre - Leer de metadata */}
-                  {product.metadata.rating_promedio && product.metadata.total_reviews && (
+                  {product.metadata.rating_promedio > 0 && product.metadata.total_reviews > 0 && (
                     <div className="flex items-center gap-2" style={{ marginBottom: '16px' }}>
                       <div className="flex items-center gap-1">
                         <span className="text-[14px] font-semibold" style={{ color: 'rgba(0, 0, 0, 0.9)' }}>
@@ -350,78 +321,80 @@ export default async function ProductPage({
                   )}
                 </div>
 
-                {/* Atributos Principales - Badges de Características */}
+                {/* Atributos Principales - Badges estilo MercadoLibre con colores icónicos */}
                 <div className="space-y-3 py-4 border-t border-gray-200">
                   <div className="flex flex-wrap gap-2">
-                    {/* Tipo de Combustible */}
+                    {/* Tipo de Combustible - Colores representativos del combustible real */}
                     {product.metadata.combustible_tipo && (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
+                      <div className="px-3 py-1.5 rounded-md text-xs font-medium border" style={{
+                        borderColor: product.metadata.combustible_tipo.toLowerCase().includes('diesel')
+                          ? '#F59E0B'  // Naranja/dorado como el diesel real
+                          : product.metadata.combustible_tipo.toLowerCase().includes('nafta')
+                          ? '#EF4444'  // Rojo como la nafta/gasolina
+                          : '#10B981', // Verde para gas natural
                         backgroundColor: product.metadata.combustible_tipo.toLowerCase().includes('diesel')
                           ? '#FEF3C7'
                           : product.metadata.combustible_tipo.toLowerCase().includes('nafta')
-                          ? '#DBEAFE'
+                          ? '#FEE2E2'
                           : '#D1FAE5',
                         color: product.metadata.combustible_tipo.toLowerCase().includes('diesel')
                           ? '#92400E'
                           : product.metadata.combustible_tipo.toLowerCase().includes('nafta')
-                          ? '#1E40AF'
-                          : '#065F46'
+                          ? '#991B1B'
+                          : '#065F46',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                       }}>
-                        <span>⛽</span>
-                        {product.metadata.combustible_tipo}
+                        Combustible: {product.metadata.combustible_tipo}
                       </div>
                     )}
 
-                    {/* TTA (Transferencia Automática) - Leer de metadata.tiene_tta */}
+                    {/* TTA Incluido - Amarillo eléctrico */}
                     {product.metadata.tiene_tta === 'incluido' && (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
-                        backgroundColor: '#DCFCE7',
-                        color: '#166534'
+                      <div className="px-3 py-1.5 rounded-md text-xs font-medium border" style={{
+                        borderColor: '#FBBF24',
+                        backgroundColor: '#FEF3C7',
+                        color: '#92400E',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                       }}>
-                        <span>⚡</span>
                         TTA Incluido
                       </div>
                     )}
+                    {/* TTA Opcional - Amarillo más suave */}
                     {product.metadata.tiene_tta === 'opcional' && (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
-                        backgroundColor: '#FEF3C7',
-                        color: '#92400E'
+                      <div className="px-3 py-1.5 rounded-md text-xs font-medium border" style={{
+                        borderColor: '#FCD34D',
+                        backgroundColor: '#FEFCE8',
+                        color: '#92400E',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                       }}>
-                        <span>⚡</span>
                         TTA Opcional
                       </div>
                     )}
 
-                    {/* Cabina - Leer de metadata.tiene_cabina */}
+                    {/* Cabina - Azul arquitectura/construcción */}
                     {product.metadata.tiene_cabina === true && (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
-                        backgroundColor: '#E0E7FF',
-                        color: '#3730A3'
+                      <div className="px-3 py-1.5 rounded-md text-xs font-medium border" style={{
+                        borderColor: '#60A5FA',
+                        backgroundColor: '#DBEAFE',
+                        color: '#1E40AF',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                       }}>
-                        <span>🏠</span>
                         Con Cabina
                       </div>
                     )}
 
-                    {/* Insonorizado con nivel dB */}
+                    {/* Nivel de Ruido - Estilo gris igual que peso y dimensiones */}
                     {product.metadata.nivel_ruido_db && (
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border-2" style={{
-                        borderColor: Number(product.metadata.nivel_ruido_db) <= 65 ? '#10B981'
-                          : Number(product.metadata.nivel_ruido_db) <= 75 ? '#F59E0B'
-                          : '#EF4444',
-                        backgroundColor: Number(product.metadata.nivel_ruido_db) <= 65 ? '#D1FAE5'
-                          : Number(product.metadata.nivel_ruido_db) <= 75 ? '#FEF3C7'
-                          : '#FEE2E2',
-                        color: Number(product.metadata.nivel_ruido_db) <= 65 ? '#065F46'
-                          : Number(product.metadata.nivel_ruido_db) <= 75 ? '#92400E'
-                          : '#991B1B'
+                      <div className="px-3 py-1.5 rounded-md text-xs font-medium border flex items-center gap-2" style={{
+                        borderColor: '#9CA3AF',
+                        backgroundColor: '#F3F4F6',
+                        color: '#374151',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                       }}>
-                        <span>🔊</span>
                         {product.metadata.nivel_ruido_db} dB
-                        {/* Barra de nivel de ruido */}
                         <div className="flex gap-0.5">
                           {[...Array(5)].map((_, i) => (
-                            <div key={i} className="w-1 h-3 rounded-full" style={{
+                            <div key={i} className="w-1 h-3 rounded-sm" style={{
                               backgroundColor: i < (5 - Math.floor(Number(product.metadata.nivel_ruido_db) / 20))
                                 ? '#10B981'
                                 : i < 3
@@ -434,57 +407,110 @@ export default async function ProductPage({
                       </div>
                     )}
 
-                    {/* Peso - Campo NATIVO de Medusa */}
+                    {/* Peso - Gris con borde más fuerte */}
                     {product.weight && (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
+                      <div className="px-3 py-1.5 rounded-md text-xs font-medium border" style={{
+                        borderColor: '#9CA3AF',
                         backgroundColor: '#F3F4F6',
-                        color: '#374151'
+                        color: '#374151',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                       }}>
-                        <span>⚖️</span>
                         {product.weight} kg
                       </div>
                     )}
 
-                    {/* Dimensiones - Campos NATIVOS de Medusa */}
+                    {/* Dimensiones - Gris con borde más fuerte */}
                     {(product.length && product.width && product.height) && (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
+                      <div className="px-3 py-1.5 rounded-md text-xs font-medium border" style={{
+                        borderColor: '#9CA3AF',
                         backgroundColor: '#F3F4F6',
-                        color: '#374151'
+                        color: '#374151',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                       }}>
-                        <span>📏</span>
                         {Math.round(Number(product.length)/10)}×{Math.round(Number(product.width)/10)}×{Math.round(Number(product.height)/10)} cm
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Características destacadas */}
-                <div className="space-y-3">
-                  <h2 className="text-base font-bold text-gray-900">Lo que tenés que saber de este producto</h2>
-                  <ul className="space-y-2 text-sm text-gray-700">
+                {/* Características destacadas - Estilo MercadoLibre */}
+                <div className="space-y-1">
+                  <h2 className="text-[16px] font-semibold mb-2" style={{
+                    color: 'rgba(0, 0, 0, 0.9)',
+                    fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                  }}>
+                    Lo que tenés que saber de este producto
+                  </h2>
+                  <ul className="space-y-1" style={{
+                    fontSize: '14px',
+                    lineHeight: '1.25',
+                    color: 'rgba(0, 0, 0, 0.8)',
+                    fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                  }}>
+                    {/* Motor */}
                     {product.metadata.motor_marca && product.metadata.motor_modelo && (
                       <li>• Motor {product.metadata.motor_marca} {product.metadata.motor_modelo}</li>
                     )}
-                    {product.metadata.potencia_prime_kva && (
-                      <li>• Potencia Prime: {product.metadata.potencia_prime_kva} KVA</li>
-                    )}
+
+                    {/* Potencias */}
                     {product.metadata.potencia_standby_kva && (
-                      <li>• Potencia Stand-By: {product.metadata.potencia_standby_kva} KVA</li>
+                      <li>• Potencia Stand-By: {product.metadata.potencia_standby_kva} KVA{product.metadata.potencia_standby_kw && ` (${product.metadata.potencia_standby_kw} KW)`}</li>
+                    )}
+                    {product.metadata.potencia_prime_kva && (
+                      <li>• Potencia Prime: {product.metadata.potencia_prime_kva} KVA{product.metadata.potencia_prime_kw && ` (${product.metadata.potencia_prime_kw} KW)`}</li>
+                    )}
+
+                    {/* Alternador con modelo */}
+                    {product.metadata.alternador_marca && (
+                      <li>• Alternador {product.metadata.alternador_marca}{product.metadata.alternador_modelo && ` ${product.metadata.alternador_modelo}`}</li>
+                    )}
+
+                    {/* Sistema eléctrico */}
+                    {product.metadata.voltaje_salida && (
+                      <li>• Voltaje: {product.metadata.voltaje_salida}{product.metadata.fases && ` - ${product.metadata.fases}`}</li>
+                    )}
+                    {product.metadata.frecuencia && (
+                      <li>• Frecuencia: {product.metadata.frecuencia}</li>
+                    )}
+
+                    {/* Combustible y autonomía */}
+                    {product.metadata.combustible_capacidad_tanque && (
+                      <li>• Capacidad de tanque: {product.metadata.combustible_capacidad_tanque} litros</li>
+                    )}
+                    {product.metadata.autonomia_horas_75_carga && (
+                      <li>• Autonomía al 75% de carga: {product.metadata.autonomia_horas_75_carga} horas</li>
+                    )}
+
+                    {/* Motor técnico */}
+                    {product.metadata.motor_cilindros && (
+                      <li>• Motor de {product.metadata.motor_cilindros} cilindros{product.metadata.motor_tipo_cilindros && ` ${product.metadata.motor_tipo_cilindros}`}</li>
+                    )}
+                    {product.metadata.motor_aspiracion && (
+                      <li>• {product.metadata.motor_aspiracion}</li>
                     )}
                     {product.metadata.tipo_refrigeracion && (
                       <li>• Refrigeración: {product.metadata.tipo_refrigeracion}</li>
                     )}
-                    {product.metadata.alternador_marca && (
-                      <li>• Alternador {product.metadata.alternador_marca}</li>
+
+                    {/* Panel de control */}
+                    {product.metadata.panel_control_marca && product.metadata.panel_control_modelo && (
+                      <li>• Panel de control {product.metadata.panel_control_marca} {product.metadata.panel_control_modelo}</li>
                     )}
-                    {product.metadata.voltaje_salida && (
-                      <li>• Voltaje: {product.metadata.voltaje_salida}</li>
+
+                    {/* Arranque */}
+                    {product.metadata.tipo_arranque && (
+                      <li>• Sistema de arranque: {product.metadata.tipo_arranque}</li>
                     )}
                   </ul>
                 </div>
 
                 <div className="pt-4 border-t border-gray-200">
-                  <p className="text-xs text-gray-600">SKU: {product.sku}</p>
+                  <p className="text-xs" style={{
+                    color: 'rgba(0, 0, 0, 0.45)',
+                    fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                  }}>
+                    SKU: {product.sku}
+                  </p>
                 </div>
               </div>
             }

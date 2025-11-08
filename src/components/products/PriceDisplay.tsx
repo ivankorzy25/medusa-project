@@ -60,6 +60,8 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [userLocation, setUserLocation] = useState<string | null>(null);
+  const [locationLoading, setLocationLoading] = useState(true);
 
   // Siempre incluir IVA
   const incluirIva = true;
@@ -123,6 +125,63 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
     fetchData();
   }, [productId, precioListaUSD, bonificacion, descuentoContado]);
 
+  // Detectar ubicación del usuario
+  useEffect(() => {
+    const getUserLocation = async () => {
+      try {
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const { latitude, longitude } = position.coords;
+
+              // Usar servicio de geocoding más preciso para Argentina
+              try {
+                const response = await fetch(
+                  `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=es`
+                );
+                const data = await response.json();
+
+                console.log('Geocoding response:', data); // Para debug
+
+                // BigDataCloud devuelve locality (ciudad/localidad) de forma más precisa
+                const locality = data.locality || data.city || data.principalSubdivision || '';
+                const state = data.principalSubdivision || '';
+
+                if (locality) {
+                  setUserLocation(locality);
+                } else if (state) {
+                  setUserLocation(state);
+                } else {
+                  // Fallback: usar las primeras 2 partes de localityInfo
+                  const parts = data.localityInfo?.administrative || [];
+                  if (parts.length > 0) {
+                    setUserLocation(parts[0].name);
+                  }
+                }
+              } catch (geoError) {
+                console.log('Geocoding error:', geoError);
+              } finally {
+                setLocationLoading(false);
+              }
+            },
+            (error) => {
+              console.log('Geolocation permission denied or error:', error);
+              setLocationLoading(false);
+            },
+            { timeout: 5000, maximumAge: 0 } // Sin cache para obtener ubicación actualizada
+          );
+        } else {
+          setLocationLoading(false);
+        }
+      } catch (err) {
+        console.log('Location detection error:', err);
+        setLocationLoading(false);
+      }
+    };
+
+    getUserLocation();
+  }, []);
+
   // Formato ARS: $ 42.171.104 (puntos para miles)
   const formatARS = (price: number): string => {
     return new Intl.NumberFormat("es-AR", {
@@ -174,7 +233,7 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
           {/* Precio estilo MercadoLibre */}
           <div className="pb-5">
             {/* Precio anterior tachado - solo si hay descuento */}
-            {descuentoPorcentaje && descuentoPorcentaje > 0 && (
+            {descuentoPorcentaje > 0 && (
               <div className="mb-2">
                 <span className="text-[16px] font-normal" style={{
                   color: 'rgba(0, 0, 0, 0.55)',
@@ -199,7 +258,7 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
                 $ {formatARS(data.escenarios.publico.con_iva)}
               </span>
               {/* Descuento - solo si existe */}
-              {descuentoPorcentaje && descuentoPorcentaje > 0 && (
+              {descuentoPorcentaje > 0 && (
                 <span className="text-[18px] font-normal" style={{
                   color: 'rgb(76, 175, 80)',
                   fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',
@@ -212,15 +271,23 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
 
             {/* Financiación - solo si está disponible */}
             {financiacionDisponible && planesFinanciacion && planesFinanciacion.length > 0 && (
-              <p className="text-[14px] font-normal mb-2" style={{
-                color: 'rgba(0, 0, 0, 0.9)',
-                fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
-              }}>
-                {planesFinanciacion[0].interes === 0 || planesFinanciacion[0].interes <= 0.01
-                  ? `Mismo precio en ${planesFinanciacion[0].cuotas} cuotas de $ ${formatARS(planesFinanciacion[0].costoPorCuota)}`
-                  : `Hasta ${planesFinanciacion[0].cuotas} cuotas de $ ${formatARS(planesFinanciacion[0].costoPorCuota)}`
-                }
-              </p>
+              <>
+                <p className="text-[14px] font-normal mb-1" style={{
+                  color: 'rgba(0, 0, 0, 0.9)',
+                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                }}>
+                  {planesFinanciacion[0].interes === 0 || planesFinanciacion[0].interes <= 0.01
+                    ? `Mismo precio en ${planesFinanciacion[0].cuotas} cuotas de $ ${formatARS(planesFinanciacion[0].costoPorCuota)}`
+                    : `Hasta ${planesFinanciacion[0].cuotas} cuotas de $ ${formatARS(planesFinanciacion[0].costoPorCuota)}`
+                  }
+                </p>
+                <p className="text-[11px] font-normal mb-2" style={{
+                  color: 'rgba(0, 0, 0, 0.45)',
+                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                }}>
+                  * Sujeto a disponibilidad. Consultar con el vendedor.
+                </p>
+              </>
             )}
 
             <p className="text-xs" style={{ color: 'rgba(0, 0, 0, 0.55)' }}>
@@ -259,8 +326,49 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
             </button>
           </div>
 
+          {/* Trust Signals - Beneficios de Compra */}
+          <div className="py-4 border-t border-gray-200 space-y-3" style={{ marginTop: '20px' }}>
+            {/* Garantía Oficial */}
+            <div className="flex items-start gap-3">
+              <span className="text-xl flex-shrink-0" style={{ color: '#10B981' }}>✓</span>
+              <div>
+                <p className="text-[13px] font-semibold" style={{
+                  color: 'rgba(0, 0, 0, 0.9)',
+                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                }}>
+                  Garantía oficial
+                </p>
+                <p className="text-[12px]" style={{
+                  color: 'rgba(0, 0, 0, 0.55)',
+                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                }}>
+                  Respaldado por el fabricante
+                </p>
+              </div>
+            </div>
+
+            {/* Envío gratis Buenos Aires */}
+            <div className="flex items-start gap-3">
+              <span className="text-xl flex-shrink-0" style={{ color: '#10B981' }}>🚚</span>
+              <div>
+                <p className="text-[13px] font-semibold" style={{
+                  color: 'rgba(0, 0, 0, 0.9)',
+                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                }}>
+                  Envío gratis
+                </p>
+                <p className="text-[12px]" style={{
+                  color: 'rgba(0, 0, 0, 0.55)',
+                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                }}>
+                  En el ámbito de Buenos Aires
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Stock - Leer de metadata */}
-          <div className="py-4 border-t border-gray-200" style={{ marginTop: '20px' }}>
+          <div className="py-4 border-t border-gray-200" style={{ marginTop: '0' }}>
             <p className="text-sm font-medium mb-1" style={{ color: 'rgba(0, 0, 0, 0.9)' }}>
               {stockDisponible ? 'Stock disponible' : 'Sin stock'}
             </p>
@@ -273,7 +381,7 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
 
           {/* Información adicional */}
           <div className="pt-4 border-t border-gray-200 space-y-3">
-            {/* Ubicación de envío - Leer de metadata */}
+            {/* Ubicación de envío - Mostrar ubicación del usuario o fallback a ubicación del vendedor */}
             <div>
               <p className="text-[14px] font-normal mb-1" style={{
                 color: 'rgba(0, 0, 0, 0.9)',
@@ -281,14 +389,22 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
               }}>
                 Entrega a acordar con el vendedor
               </p>
-              {ubicacionEnvio && (
-                <p className="text-[14px] font-normal" style={{
-                  color: 'rgba(0, 0, 0, 0.55)',
-                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
-                }}>
-                  {ubicacionEnvio.texto_completo || `${ubicacionEnvio.ciudad}, ${ubicacionEnvio.provincia}`}
-                </p>
-              )}
+              <p className="text-[14px] font-normal" style={{
+                color: 'rgba(0, 0, 0, 0.55)',
+                fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+              }}>
+                {locationLoading ? (
+                  'Detectando tu ubicación...'
+                ) : userLocation ? (
+                  <>
+                    Enviar a <span style={{ fontWeight: 600 }}>{userLocation}</span>
+                  </>
+                ) : ubicacionEnvio ? (
+                  ubicacionEnvio.texto_completo || `${ubicacionEnvio.ciudad}, ${ubicacionEnvio.provincia}`
+                ) : (
+                  'Ubicación no disponible'
+                )}
+              </p>
             </div>
 
             <div>
@@ -322,6 +438,62 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
                 </p>
               </div>
             )}
+          </div>
+
+          {/* Card del Vendedor */}
+          <div className="pt-4 border-t border-gray-200">
+            <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                  K
+                </div>
+                <div className="flex-1">
+                  <p className="text-[14px] font-semibold" style={{
+                    color: 'rgba(0, 0, 0, 0.9)',
+                    fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                  }}>
+                    KOR Generadores Eléctricos
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span key={star} className="text-yellow-400 text-sm">★</span>
+                      ))}
+                    </div>
+                    <span className="text-[12px]" style={{ color: 'rgba(0, 0, 0, 0.55)' }}>
+                      5.0
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-[12px]">
+                <div>
+                  <p style={{ color: 'rgba(0, 0, 0, 0.55)' }}>Años vendiendo</p>
+                  <p className="font-semibold" style={{ color: 'rgba(0, 0, 0, 0.9)' }}>+15 años</p>
+                </div>
+                <div>
+                  <p style={{ color: 'rgba(0, 0, 0, 0.55)' }}>Respuesta</p>
+                  <p className="font-semibold" style={{ color: 'rgba(0, 0, 0, 0.9)' }}>Dentro de 24hs</p>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <p className="text-[11px]" style={{ color: 'rgba(0, 0, 0, 0.55)' }}>
+                  Especialistas en generación de energía eléctrica y grupos electrógenos industriales
+                </p>
+              </div>
+
+              <button className="w-full rounded-md transition-colors py-2 text-[13px] font-medium" style={{
+                backgroundColor: 'white',
+                color: '#3483FA',
+                border: '1px solid #3483FA',
+                fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',
+                cursor: 'pointer'
+              }}>
+                Ver más productos del vendedor
+              </button>
+            </div>
           </div>
 
           {/* Botón Ver Detalles */}
