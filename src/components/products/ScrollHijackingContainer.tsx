@@ -72,7 +72,8 @@ export function ScrollHijackingContainer({
 
   return (
     <div ref={containerRef} className="relative">
-      <div className="grid lg:grid-cols-[45%_55%] gap-6">
+      {/* Grid estilo MercadoLibre: 40% imagen, 60% info */}
+      <div className="grid lg:grid-cols-[40%_60%] gap-8">
         {/* Left Column - Image (becomes sticky) */}
         <div ref={imageRef} className="lg:sticky lg:top-24 lg:self-start">
           {imageContent}
@@ -88,14 +89,14 @@ export function ScrollHijackingContainer({
             scrollbarColor: "#CBD5E0 transparent",
           }}
         >
-          <div className="grid lg:grid-cols-[60%_40%] gap-6">
+          <div className="grid lg:grid-cols-[58%_42%] gap-8">
             {/* Center Column - Description */}
-            <div>
+            <div className="space-y-3">
               {centerContent}
             </div>
 
-            {/* Right Column - Price */}
-            <div className="space-y-4 max-w-full overflow-hidden">
+            {/* Right Column - Price Card */}
+            <div className="bg-white border border-[#e0e0e0] rounded-md p-4">
               {rightContent}
             </div>
           </div>

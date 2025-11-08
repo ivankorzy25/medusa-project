@@ -230,8 +230,8 @@ export default async function ProductPage({
       </div>
 
       {/* Product Content */}
-      <div className="max-w-[1200px] mx-auto px-4 py-6">
-        <div className="bg-white rounded p-6 mb-6">
+      <div className="max-w-[1200px] mx-auto px-5 py-5">
+        <div className="bg-white rounded-lg p-5 mb-5">
           <ScrollHijackingContainer
             imageContent={
               <ImageCarousel
@@ -264,7 +264,7 @@ export default async function ProductPage({
 
                 <div>
                   <p className="text-sm text-gray-500 mb-2">Nuevo</p>
-                  <h1 className="text-2xl font-bold text-[#333333] leading-tight mb-4">
+                  <h1 className="text-[20px] font-semibold text-[#333333] leading-[1.3] mb-4">
                     {product.title}
                   </h1>
 

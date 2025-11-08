@@ -193,8 +193,8 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig }: PriceDispla
           </div>
 
           {/* Botón CTA */}
-          <div className="py-4 border-t border-gray-200">
-            <button className="w-full bg-[#3483FA] hover:bg-[#2968C8] text-white font-semibold py-3 px-4 rounded-md transition-colors text-base">
+          <div className="py-5 border-t border-gray-200">
+            <button className="w-full bg-[#3483FA] hover:bg-[#2968C8] text-white font-semibold px-4 rounded-md transition-colors text-base h-12">
               Consultar ahora
             </button>
           </div>
