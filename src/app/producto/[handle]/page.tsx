@@ -34,6 +34,12 @@ async function getProductByHandle(handle: string) {
     priceWithoutTax: prices.priceWithoutTax,
     priceWithTax: prices.priceWithTax,
     currency: prices.currency,
+    // Campos nativos de Medusa (peso y dimensiones)
+    weight: product.weight,
+    length: product.length,
+    width: product.width,
+    height: product.height,
+    origin_country: product.origin_country,
     metadata: {
       // Electric specs
       potencia_standby_kva: product.metadata?.potencia_stand_by ? Number(product.metadata.potencia_stand_by) : undefined,
@@ -454,25 +460,25 @@ export default async function ProductPage({
                       </div>
                     )}
 
-                    {/* Peso */}
-                    {product.metadata.peso_kg && (
+                    {/* Peso - Campo NATIVO de Medusa */}
+                    {product.weight && (
                       <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
                         backgroundColor: '#F3F4F6',
                         color: '#374151'
                       }}>
                         <span>⚖️</span>
-                        {product.metadata.peso_kg} kg
+                        {product.weight} kg
                       </div>
                     )}
 
-                    {/* Dimensiones */}
-                    {(product.metadata.largo_mm && product.metadata.ancho_mm && product.metadata.alto_mm) && (
+                    {/* Dimensiones - Campos NATIVOS de Medusa */}
+                    {(product.length && product.width && product.height) && (
                       <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
                         backgroundColor: '#F3F4F6',
                         color: '#374151'
                       }}>
                         <span>📏</span>
-                        {Math.round(Number(product.metadata.largo_mm)/10)}×{Math.round(Number(product.metadata.ancho_mm)/10)}×{Math.round(Number(product.metadata.alto_mm)/10)} cm
+                        {Math.round(Number(product.length)/10)}×{Math.round(Number(product.width)/10)}×{Math.round(Number(product.height)/10)} cm
                       </div>
                     )}
                   </div>
