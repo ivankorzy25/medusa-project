@@ -53,6 +53,10 @@ async function getProductByHandle(handle: string) {
       // Promotional discount
       descuento_porcentaje: product.metadata?.descuento_porcentaje ? Number(product.metadata.descuento_porcentaje) : undefined,
       precio_anterior: product.metadata?.precio_anterior ? Number(product.metadata.precio_anterior) : undefined,
+      // Sales tracking
+      total_ventas: product.metadata?.total_ventas ? Number(product.metadata.total_ventas) : undefined,
+      es_mas_vendido: product.metadata?.es_mas_vendido === true || product.metadata?.es_mas_vendido === 'true',
+      categoria: product.metadata?.categoria as string | undefined,
     },
     images: (product.images || []).map((img: any, index: number) => ({
       id: img.id || String(index),
@@ -248,36 +252,44 @@ export default async function ProductPage({
             }
             centerContent={
               <div className="space-y-4">
-                {/* Badges estilo MercadoLibre */}
-                <div className="flex flex-wrap gap-2 items-center mb-2">
-                  <span className="text-[12px] font-semibold px-2 py-1 rounded" style={{
-                    color: 'rgb(255, 255, 255)',
-                    backgroundColor: '#FF6633',
-                    fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',
-                    fontWeight: 600
-                  }}>
-                    MÁS VENDIDO
-                  </span>
-                  {/* Badge OFERTA - solo si hay descuento */}
-                  {product.metadata.descuento_porcentaje && product.metadata.descuento_porcentaje > 0 && (
-                    <span className="text-[12px] font-semibold px-2 py-1 rounded" style={{
-                      color: 'rgb(255, 255, 255)',
-                      backgroundColor: '#3483FA',
-                      fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',
-                      fontWeight: 600
-                    }}>
-                      OFERTA DEL DÍA
-                    </span>
-                  )}
-                </div>
+                {/* Badges estilo MercadoLibre - Dinámicos */}
+                {(product.metadata.es_mas_vendido || (product.metadata.descuento_porcentaje && product.metadata.descuento_porcentaje > 0)) && (
+                  <div className="flex flex-wrap gap-2 items-center mb-2">
+                    {/* Badge MÁS VENDIDO - solo si tiene flag en metadata */}
+                    {product.metadata.es_mas_vendido && (
+                      <span className="text-[12px] font-semibold px-2 py-1 rounded" style={{
+                        color: 'rgb(255, 255, 255)',
+                        backgroundColor: '#FF6633',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',
+                        fontWeight: 600
+                      }}>
+                        MÁS VENDIDO
+                      </span>
+                    )}
+                    {/* Badge OFERTA - solo si hay descuento */}
+                    {product.metadata.descuento_porcentaje && product.metadata.descuento_porcentaje > 0 && (
+                      <span className="text-[12px] font-semibold px-2 py-1 rounded" style={{
+                        color: 'rgb(255, 255, 255)',
+                        backgroundColor: '#3483FA',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',
+                        fontWeight: 600
+                      }}>
+                        OFERTA DEL DÍA
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 <div>
-                  {/* Subtítulo (Nuevo | +100 vendidos) */}
+                  {/* Subtítulo dinámico (Nuevo | +X vendidos) */}
                   <p className="text-[14px] font-normal mb-2" style={{
                     color: 'rgba(0, 0, 0, 0.55)',
                     fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                   }}>
-                    Nuevo | +100 vendidos
+                    Nuevo
+                    {product.metadata.total_ventas && product.metadata.total_ventas > 0 && (
+                      <> | +{product.metadata.total_ventas} vendidos</>
+                    )}
                   </p>
 
                   {/* Título H1 */}
