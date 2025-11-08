@@ -177,3 +177,36 @@
 [00:41:37.727] Server  ERROR   [API Route] Exchange rates fetch failed: 404 "Not Found"
 [00:41:37.840] Browser WARN    Image with src "/logos/kor-logo-3d-final.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
 [00:41:37.841] Browser ERROR   [PriceDisplay] Error: {}
+[00:58:14.814] Server  LOG     [API Route] Fetching exchange rates from DolarAPI.com
+[00:58:15.021] Server  LOG     [API Route] Exchange rates fetched successfully from DolarAPI
+[00:58:22.262] Server  LOG     [API Route] Calculating price: {}
+[00:58:22.270] Server  LOG     [API Route] Fetching exchange rates from DolarAPI.com
+[00:58:22.396] Server  LOG     [API Route] Exchange rates fetched successfully from DolarAPI
+[00:58:22.426] Server  LOG     [API Route] Price calculated: {}
+[00:58:34.180] Server  LOG     [API Route] Fetching exchange rates from DolarAPI.com
+[00:58:34.234] Server  LOG     [API Route] Exchange rates fetched successfully from DolarAPI
+[00:58:34.243] Server  LOG     [API Route] Calculating price: {}
+[00:58:34.347] Browser ERROR   [PriceDisplay] Error: {}
+[00:58:36.284] Server  DEBUG   Performing request to:
+ "URL: http://localhost:9000/store/products?handle=cummins-cs200a&region_id=reg_01K9FZ96V1AT4PGR95NE8VYZ8N&fields=%2Avariants%2C%2Avariants.calculated_price%2C%2Aimages%2C%2Ametadata\n" "Headers: {\n  \"accept\": \"application/json\",\n  \"content-type\": \"application/json\",\n  \"x-publishable-api-key\": \"pk_f1e1f52b9d9a06b31c0a0d75e188818220ea0bc3aaae1df27e2e8720ec56cc9b\",\n  \"authorization\": \"<REDACTED>\"\n}\n"
+[00:58:36.289] Server  DEBUG   Performing request to:
+ "URL: http://localhost:9000/store/products?handle=cummins-cs200a&region_id=reg_01K9FZ96V1AT4PGR95NE8VYZ8N&fields=%2Avariants%2C%2Avariants.calculated_price%2C%2Aimages%2C%2Ametadata\n" "Headers: {\n  \"accept\": \"application/json\",\n  \"content-type\": \"application/json\",\n  \"x-publishable-api-key\": \"pk_f1e1f52b9d9a06b31c0a0d75e188818220ea0bc3aaae1df27e2e8720ec56cc9b\",\n  \"authorization\": \"<REDACTED>\"\n}\n"
+[00:58:36.715] Server  DEBUG   Received response with status 200
+
+[00:58:36.727] Server  DEBUG   Received response with status 200
+
+[00:58:37.313] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:58:37.494] Server  LOG     [API Route] Fetching exchange rates from DolarAPI.com
+[00:58:37.564] Server  LOG     [API Route] Exchange rates fetched successfully from DolarAPI
+[00:58:37.572] Browser WARN    Image with src "/logos/kor-logo-3d-final.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:58:37.587] Server  LOG     [API Route] Calculating price: {}
+[00:58:37.691] Browser ERROR   [PriceDisplay] Error: {}
+[00:58:41.426] Server  LOG      ✓ Compiled in 408ms
+[00:59:35.398] Server  LOG     [API Route] Calculating price: {}
+[00:59:35.414] Server  LOG     [API Route] Fetching exchange rates from DolarAPI.com
+[00:59:35.484] Server  LOG     [API Route] Exchange rates fetched successfully from DolarAPI
+[00:59:35.489] Server  LOG     [API Route] Price calculated: {}
+[00:59:38.784] Server  LOG     [API Route] Calculating price: {}
+[00:59:38.793] Server  LOG     [API Route] Fetching exchange rates from DolarAPI.com
+[00:59:38.811] Server  LOG     [API Route] Exchange rates fetched successfully from DolarAPI
+[00:59:38.813] Server  LOG     [API Route] Price calculated: {}

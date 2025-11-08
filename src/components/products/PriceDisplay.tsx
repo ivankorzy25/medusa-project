@@ -57,7 +57,7 @@ export function PriceDisplay({ productId, priceUSD }: PriceDisplayProps) {
 
       // Obtener precio calculado
       const priceResponse = await fetch(
-        `/api/calculate-price?product_id=${productId}&tipo_cambio=${tipoCambio}&incluir_iva=${incluirIva}`,
+        `/api/calculate-price?precio_usd=${priceUSD || 0}&tipo_cambio=${tipoCambio}&incluir_iva=${incluirIva}`,
         {
           cache: 'no-store',
           headers: { 'Content-Type': 'application/json' }

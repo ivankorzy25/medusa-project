@@ -1,5 +1,6 @@
-✅ Fix region_id - CS200A funcionando correctamente
+📍 Checkpoint: Sistema estable antes de implementar precios dinámicos
 
-- Corregido DEFAULT_REGION_ID a región existente en Medusa
-- Producto CS200A ahora carga sin errores 404
-- Sistema estable y listo para configurar precios
+- CS200A funcionando correctamente
+- Region ID corregido
+- Sistema listo para implementar conversión USD → ARS
+- Endpoints del backend identificados
