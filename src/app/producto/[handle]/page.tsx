@@ -55,108 +55,15 @@ async function getProductByHandle(handle: string) {
   }
 }
 
-async function getProductDocuments(productId: string) {
-  // TODO: Replace with actual database query
-  // For now, return mock documents
+async function getProductDocuments(metadata: any) {
+  // Retorna documentos desde metadata del producto
+  // Si metadata.documentos existe, lo usa; si no, retorna array vacío
 
-  return [
-    {
-      id: "1",
-      product_id: productId,
-      document_type: "faq",
-      title: "Preguntas Frecuentes - Cummins CS200A",
-      content_html: `
-        <div class="preguntas-frecuentes">
-          <div class="faq-category">
-            <h3>Operación y Funcionamiento</h3>
-            <div class="faq-item">
-              <h4>¿El Cummins CS200A arranca automáticamente cuando se corta la luz?</h4>
-              <p>Sí, el panel Comap MRS16 incluye función auto-start. Cuando detecta corte de red, arranca automáticamente el generador en 8-10 segundos y alimenta las cargas. Cuando vuelve la corriente, retorna a la red y apaga el generador con enfriamiento progresivo. <strong>Requiere tablero de transferencia automática (TTA)</strong> que se cotiza aparte.</p>
-            </div>
-            <div class="faq-item">
-              <h4>¿Puedo usarlo en forma continua 24/7 o solo para emergencias?</h4>
-              <p>Sí, este generador está diseñado para uso continuo. El motor Cummins 1500 RPM es de ciclo industrial apto para operación 24/7 en potencia Prime (180 KVA). Muchos clientes lo usan como alimentación primaria en zonas sin red eléctrica. Requiere mantenimientos cada 250 horas.</p>
-            </div>
-          </div>
+  if (!metadata || !metadata.documentos || !Array.isArray(metadata.documentos)) {
+    return []
+  }
 
-          <div class="faq-category">
-            <h3>Especificaciones Técnicas</h3>
-            <div class="faq-item">
-              <h4>¿Qué diferencia hay entre 200 KVA Stand-By y 180 KVA Prime?</h4>
-              <p><strong>Stand-By (200 KVA)</strong> es la potencia máxima para uso ocasional de emergencia (algunas horas al mes). <strong>Prime (180 KVA)</strong> es la potencia para operación continua prolongada (muchas horas diarias). Si vas a usar el generador frecuentemente o varias horas seguidas, dimensioná según potencia Prime.</p>
-            </div>
-          </div>
-        </div>
-      `,
-      file_url: null,
-      display_order: 1,
-      is_featured: true,
-      created_at: new Date().toISOString(),
-    },
-    {
-      id: "2",
-      product_id: productId,
-      document_type: "especificaciones",
-      title: "Especificaciones Técnicas Completas",
-      content_html: `
-        <div class="especificaciones">
-          <h3>Motor Cummins 6BTAA5.9-G2</h3>
-          <table>
-            <tr><th>Especificación</th><th>Valor</th></tr>
-            <tr><td>Marca</td><td>Cummins</td></tr>
-            <tr><td>Modelo</td><td>6BTAA5.9-G2</td></tr>
-            <tr><td>Tipo</td><td>Diesel 4 tiempos</td></tr>
-            <tr><td>Cilindros</td><td>6 en línea</td></tr>
-            <tr><td>Cilindrada</td><td>5.9 litros</td></tr>
-            <tr><td>RPM</td><td>1500</td></tr>
-            <tr><td>Refrigeración</td><td>Líquido</td></tr>
-          </table>
-
-          <h3>Alternador Stamford HCI434F</h3>
-          <table>
-            <tr><th>Especificación</th><th>Valor</th></tr>
-            <tr><td>Marca</td><td>Stamford</td></tr>
-            <tr><td>Modelo</td><td>HCI434F</td></tr>
-            <tr><td>Potencia Stand-By</td><td>200 KVA</td></tr>
-            <tr><td>Potencia Prime</td><td>180 KVA</td></tr>
-            <tr><td>Voltaje</td><td>380/220V Trifásico</td></tr>
-            <tr><td>Frecuencia</td><td>50 Hz</td></tr>
-            <tr><td>Factor de Potencia</td><td>0.8</td></tr>
-          </table>
-        </div>
-      `,
-      file_url: null,
-      display_order: 2,
-      is_featured: false,
-      created_at: new Date().toISOString(),
-    },
-    {
-      id: "3",
-      product_id: productId,
-      document_type: "garantia",
-      title: "Garantía y Condiciones",
-      content_html: `
-        <div class="garantia">
-          <h3>Cobertura de Garantía</h3>
-          <p>El CS200A cuenta con:</p>
-          <ul>
-            <li><strong>12 meses</strong> de garantía en equipo completo</li>
-            <li><strong>24 meses</strong> de garantía en motor Cummins</li>
-            <li><strong>24 meses</strong> de garantía en alternador Stamford</li>
-          </ul>
-
-          <div class="alert alert-info">
-            <h4>Validez de Garantía</h4>
-            <p>La garantía requiere cumplir con el plan de mantenimientos según manual del fabricante. KOR ofrece planes de mantenimiento preventivo con precio fijo anual.</p>
-          </div>
-        </div>
-      `,
-      file_url: null,
-      display_order: 3,
-      is_featured: false,
-      created_at: new Date().toISOString(),
-    },
-  ]
+  return metadata.documentos
 }
 
 export async function generateMetadata({
@@ -197,7 +104,7 @@ export default async function ProductPage({
     notFound()
   }
 
-  const documents = await getProductDocuments(product.id)
+  const documents = await getProductDocuments(product.metadata)
 
   return (
     <div className="min-h-screen bg-[#EDEDED]">
@@ -526,6 +433,22 @@ export default async function ProductPage({
                 stockCantidad={product.metadata.stock_cantidad}
                 stockDisponible={product.metadata.stock_disponible}
                 ubicacionEnvio={product.metadata.ubicacion_envio}
+                vendorData={{
+                  nombre: product.metadata.vendor_nombre,
+                  nombre_completo: product.metadata.vendor_nombre_completo,
+                  rating: product.metadata.vendor_rating,
+                  anos_experiencia: product.metadata.vendor_anos_experiencia,
+                  tiempo_respuesta: product.metadata.vendor_tiempo_respuesta,
+                  descripcion: product.metadata.vendor_descripcion
+                }}
+                trustSignals={{
+                  garantia_incluida: product.metadata.trust_garantia_incluida,
+                  garantia_texto: product.metadata.trust_garantia_texto,
+                  garantia_descripcion: product.metadata.trust_garantia_descripcion,
+                  envio_gratis: product.metadata.trust_envio_gratis,
+                  envio_texto: product.metadata.trust_envio_texto,
+                  envio_descripcion: product.metadata.trust_envio_descripcion
+                }}
               />
             }
           />

@@ -37,6 +37,22 @@ interface PriceDisplayProps {
     provincia?: string;
     texto_completo?: string;
   };
+  vendorData?: {
+    nombre?: string;
+    nombre_completo?: string;
+    rating?: string;
+    anos_experiencia?: string;
+    tiempo_respuesta?: string;
+    descripcion?: string;
+  };
+  trustSignals?: {
+    garantia_incluida?: boolean;
+    garantia_texto?: string;
+    garantia_descripcion?: string;
+    envio_gratis?: boolean;
+    envio_texto?: string;
+    envio_descripcion?: string;
+  };
 }
 
 type ExchangeRateType = "oficial" | "blue" | "mep" | "ccl" | "mayorista" | "cripto" | "tarjeta";
@@ -51,7 +67,7 @@ const EXCHANGE_RATE_LABELS: Record<ExchangeRateType, { label: string; shortLabel
   tarjeta: { label: "Dólar Tarjeta", shortLabel: "Tarjeta" },
 };
 
-export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorcentaje, precioAnterior, financiacionDisponible, planesFinanciacion, stockCantidad, stockDisponible, ubicacionEnvio }: PriceDisplayProps) {
+export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorcentaje, precioAnterior, financiacionDisponible, planesFinanciacion, stockCantidad, stockDisponible, ubicacionEnvio, vendorData, trustSignals }: PriceDisplayProps) {
   // Determinar tipo de cambio según producto - leer desde metadata
   const tipoCambio: ExchangeRateType = pricingConfig?.currency_type === "usd_blue" ? "blue" : "oficial";
 
@@ -326,46 +342,56 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
             </button>
           </div>
 
-          {/* Trust Signals - Beneficios de Compra */}
-          <div className="py-4 border-t border-gray-200 space-y-3" style={{ marginTop: '20px' }}>
-            {/* Garantía Oficial */}
-            <div className="flex items-start gap-3">
-              <span className="text-xl flex-shrink-0" style={{ color: '#10B981' }}>✓</span>
-              <div>
-                <p className="text-[13px] font-semibold" style={{
-                  color: 'rgba(0, 0, 0, 0.9)',
-                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
-                }}>
-                  Garantía oficial
-                </p>
-                <p className="text-[12px]" style={{
-                  color: 'rgba(0, 0, 0, 0.55)',
-                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
-                }}>
-                  Respaldado por el fabricante
-                </p>
-              </div>
-            </div>
+          {/* Trust Signals - Beneficios de Compra - DINÁMICO desde metadata */}
+          {(trustSignals?.garantia_incluida || trustSignals?.envio_gratis) && (
+            <div className="py-4 border-t border-gray-200 space-y-3" style={{ marginTop: '20px' }}>
+              {/* Garantía - Dinámico */}
+              {trustSignals?.garantia_incluida && (
+                <div className="flex items-start gap-3">
+                  <span className="text-xl flex-shrink-0" style={{ color: '#10B981' }}>✓</span>
+                  <div>
+                    <p className="text-[13px] font-semibold" style={{
+                      color: 'rgba(0, 0, 0, 0.9)',
+                      fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                    }}>
+                      {trustSignals.garantia_texto || 'Garantía oficial'}
+                    </p>
+                    {trustSignals.garantia_descripcion && (
+                      <p className="text-[12px]" style={{
+                        color: 'rgba(0, 0, 0, 0.55)',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                      }}>
+                        {trustSignals.garantia_descripcion}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
 
-            {/* Envío gratis Buenos Aires */}
-            <div className="flex items-start gap-3">
-              <span className="text-xl flex-shrink-0" style={{ color: '#10B981' }}>🚚</span>
-              <div>
-                <p className="text-[13px] font-semibold" style={{
-                  color: 'rgba(0, 0, 0, 0.9)',
-                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
-                }}>
-                  Envío gratis
-                </p>
-                <p className="text-[12px]" style={{
-                  color: 'rgba(0, 0, 0, 0.55)',
-                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
-                }}>
-                  En el ámbito de Buenos Aires
-                </p>
-              </div>
+              {/* Envío - Dinámico */}
+              {trustSignals?.envio_gratis && (
+                <div className="flex items-start gap-3">
+                  <span className="text-xl flex-shrink-0" style={{ color: '#10B981' }}>🚚</span>
+                  <div>
+                    <p className="text-[13px] font-semibold" style={{
+                      color: 'rgba(0, 0, 0, 0.9)',
+                      fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                    }}>
+                      {trustSignals.envio_texto || 'Envío gratis'}
+                    </p>
+                    {trustSignals.envio_descripcion && (
+                      <p className="text-[12px]" style={{
+                        color: 'rgba(0, 0, 0, 0.55)',
+                        fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                      }}>
+                        {trustSignals.envio_descripcion}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          )}
 
           {/* Stock - Leer de metadata */}
           <div className="py-4 border-t border-gray-200" style={{ marginTop: '0' }}>
@@ -440,61 +466,71 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
             )}
           </div>
 
-          {/* Card del Vendedor */}
-          <div className="pt-4 border-t border-gray-200">
-            <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                  K
-                </div>
-                <div className="flex-1">
-                  <p className="text-[14px] font-semibold" style={{
-                    color: 'rgba(0, 0, 0, 0.9)',
-                    fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
-                  }}>
-                    KOR Generadores Eléctricos
-                  </p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="flex">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <span key={star} className="text-yellow-400 text-sm">★</span>
-                      ))}
-                    </div>
-                    <span className="text-[12px]" style={{ color: 'rgba(0, 0, 0, 0.55)' }}>
-                      5.0
-                    </span>
+          {/* Card del Vendedor - DINÁMICO desde metadata */}
+          {vendorData && (
+            <div className="pt-4 border-t border-gray-200">
+              <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                    {vendorData.nombre?.charAt(0) || 'V'}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[14px] font-semibold" style={{
+                      color: 'rgba(0, 0, 0, 0.9)',
+                      fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
+                    }}>
+                      {vendorData.nombre_completo || vendorData.nombre || 'Vendedor'}
+                    </p>
+                    {vendorData.rating && (
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="flex">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <span key={star} className="text-yellow-400 text-sm">★</span>
+                          ))}
+                        </div>
+                        <span className="text-[12px]" style={{ color: 'rgba(0, 0, 0, 0.55)' }}>
+                          {vendorData.rating}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-3 text-[12px]">
-                <div>
-                  <p style={{ color: 'rgba(0, 0, 0, 0.55)' }}>Años vendiendo</p>
-                  <p className="font-semibold" style={{ color: 'rgba(0, 0, 0, 0.9)' }}>+15 años</p>
+                <div className="grid grid-cols-2 gap-3 text-[12px]">
+                  {vendorData.anos_experiencia && (
+                    <div>
+                      <p style={{ color: 'rgba(0, 0, 0, 0.55)' }}>Años vendiendo</p>
+                      <p className="font-semibold" style={{ color: 'rgba(0, 0, 0, 0.9)' }}>+{vendorData.anos_experiencia} años</p>
+                    </div>
+                  )}
+                  {vendorData.tiempo_respuesta && (
+                    <div>
+                      <p style={{ color: 'rgba(0, 0, 0, 0.55)' }}>Respuesta</p>
+                      <p className="font-semibold" style={{ color: 'rgba(0, 0, 0, 0.9)' }}>{vendorData.tiempo_respuesta}</p>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <p style={{ color: 'rgba(0, 0, 0, 0.55)' }}>Respuesta</p>
-                  <p className="font-semibold" style={{ color: 'rgba(0, 0, 0, 0.9)' }}>Dentro de 24hs</p>
-                </div>
-              </div>
 
-              <div className="pt-2">
-                <p className="text-[11px]" style={{ color: 'rgba(0, 0, 0, 0.55)' }}>
-                  Especialistas en generación de energía eléctrica y grupos electrógenos industriales
-                </p>
-              </div>
+                {vendorData.descripcion && (
+                  <div className="pt-2">
+                    <p className="text-[11px]" style={{ color: 'rgba(0, 0, 0, 0.55)' }}>
+                      {vendorData.descripcion}
+                    </p>
+                  </div>
+                )}
 
-              <button className="w-full rounded-md transition-colors py-2 text-[13px] font-medium" style={{
-                backgroundColor: 'white',
-                color: '#3483FA',
-                border: '1px solid #3483FA',
-                fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',
-                cursor: 'pointer'
-              }}>
-                Ver más productos del vendedor
-              </button>
+                <button className="w-full rounded-md transition-colors py-2 text-[13px] font-medium" style={{
+                  backgroundColor: 'white',
+                  color: '#3483FA',
+                  border: '1px solid #3483FA',
+                  fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',
+                  cursor: 'pointer'
+                }}>
+                  Ver más productos del vendedor
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Botón Ver Detalles */}
           <div className="pt-4 border-t border-gray-200 flex justify-center">

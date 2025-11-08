@@ -112,38 +112,11 @@ export function ProductInfoTabs({ description, metadata, variants }: ProductInfo
               Aplicaciones Industriales
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Hospitales y Clínicas",
-                  description: "Respaldo crítico para equipos médicos y quirófanos",
-                  icon: "🏥",
-                },
-                {
-                  title: "Centros de Datos",
-                  description: "Energía ininterrumpida para infraestructura TI crítica",
-                  icon: "💻",
-                },
-                {
-                  title: "Industria Manufacturera",
-                  description: "Continuidad operacional para líneas de producción",
-                  icon: "🏭",
-                },
-                {
-                  title: "Edificios Comerciales",
-                  description: "Respaldo para sistemas críticos y elevadores",
-                  icon: "🏢",
-                },
-                {
-                  title: "Instalaciones Agrícolas",
-                  description: "Energía confiable para sistemas de riego",
-                  icon: "🌾",
-                },
-                {
-                  title: "Telecomunicaciones",
-                  description: "Respaldo para antenas y centros de switching",
-                  icon: "📡",
-                },
-              ].map((app, index) => (
+              {/* DINÁMICO desde metadata.aplicaciones_industriales */}
+              {(metadata.aplicaciones_industriales && Array.isArray(metadata.aplicaciones_industriales)
+                ? metadata.aplicaciones_industriales
+                : []
+              ).map((app: any, index: number) => (
                 <div
                   key={index}
                   className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-xl transition-all duration-300 hover:border-[#FF6B00] hover:-translate-y-1 group"

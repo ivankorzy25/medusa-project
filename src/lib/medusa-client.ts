@@ -7,8 +7,15 @@ export const medusa = new Medusa({
   publishableKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "",
 })
 
-// Default region ID for Europe (EUR) - región existente en Medusa
-const DEFAULT_REGION_ID = "reg_01K9FZ96V1AT4PGR95NE8VYZ8N"
+// Region IDs
+export const REGIONS = {
+  EUROPE: "reg_01K9FZ96V1AT4PGR95NE8VYZ8N",      // EUR - Europe
+  ARGENTINA: "reg_01JCARGENTINA2025",            // ARS - Argentina
+} as const
+
+// Default region ID - Argentina (ARS)
+// Cambiar a REGIONS.EUROPE si necesitás usar EUR
+const DEFAULT_REGION_ID = REGIONS.ARGENTINA
 
 /**
  * Fetch a product by its handle from Medusa API
@@ -60,7 +67,7 @@ export function convertCentsToDollars(cents: number): number {
 
 /**
  * Get the price for a variant (handles calculated_price structure)
- * Fallback: If calculated_price is null, fetch price directly from variant
+ * Fallback: If calculated_price is null, fetch price directly from database
  */
 export async function getVariantPrice(variant: any) {
   const calculatedPrice = variant.calculated_price
@@ -81,21 +88,25 @@ export async function getVariantPrice(variant: any) {
     }
   }
 
-  // Fallback: Try to get price from variant's price data
-  // This happens when calculated_price is null
+  // Fallback: Fetch price directly from database when calculated_price is null
+  // This is needed because Medusa v2 Store API doesn't always return calculated_price
   try {
-    // For CS200A, we know the price is $26,411 USD (updated from PDF Lista #1083)
-    // In a real scenario, we would fetch this from the database
-    // For now, hardcode it as a temporary solution
-    if (variant.sku === "GEN-CS200A-STD") {
-      return {
-        priceWithoutTax: 26411,
-        priceWithTax: 26411,
-        currency: "USD",
+    const priceResponse = await fetch(`http://localhost:3000/api/product-prices/${variant.id}`)
+
+    if (priceResponse.ok) {
+      const priceData = await priceResponse.json()
+      if (priceData.amount && priceData.currency_code) {
+        const price = convertCentsToDollars(priceData.amount)
+        return {
+          priceWithoutTax: price,
+          priceWithTax: price,
+          currency: priceData.currency_code.toUpperCase(),
+        }
       }
     }
 
-    // Default fallback
+    // If fetch fails, return zero
+    console.warn("Could not fetch price from database for variant:", variant.id)
     return { priceWithoutTax: 0, priceWithTax: 0, currency: "USD" }
   } catch (error) {
     console.error("Error getting variant price:", error)

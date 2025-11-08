@@ -73,7 +73,32 @@
       "categoria": "Generadores Diesel"
     },
 
+    "INFORMACION_DEL_VENDEDOR": {
+      "NOTA": "Card del vendedor - Usualmente es KOR para todos los productos",
+      "vendor_nombre": "KOR",
+      "vendor_nombre_completo": "KOR - Soluciones Energéticas Profesionales",
+      "vendor_rating": "5.0",
+      "vendor_total_ventas": 0,
+      "vendor_anos_experiencia": "15",
+      "vendor_tiempo_respuesta": "Dentro de 24hs",
+      "vendor_descripcion": "Especialistas en generación de energía eléctrica y grupos electrógenos industriales. Venta, alquiler y servicio técnico multimarca."
+    },
+
+    "TRUST_SIGNALS": {
+      "NOTA": "Beneficios de compra que se muestran debajo del precio",
+      "trust_garantia_incluida": true,
+      "trust_garantia_texto": "Garantía oficial",
+      "trust_garantia_descripcion": "Respaldado por el fabricante",
+      "trust_envio_gratis": true,
+      "trust_envio_texto": "Envío gratis",
+      "trust_envio_descripcion": "En el ámbito de Buenos Aires",
+      "trust_acepta_devoluciones": false
+    },
+
     "UBICACION_Y_ENVIO": {
+      "ubicacion_ciudad": "Florida",
+      "ubicacion_provincia": "Buenos Aires",
+      "ubicacion_pais": "Argentina",
       "ubicacion_envio": {
         "ciudad": "Florida",
         "provincia": "Buenos Aires",
@@ -109,6 +134,48 @@
       "descuento_contado_percentage": 0,
       "currency_type": "usd_blue",
       "familia": "Generadores Cummins - Línea CS"
+    },
+
+    "APLICACIONES_INDUSTRIALES": {
+      "NOTA": "Array de aplicaciones donde se puede usar este producto - Se adapta a cualquier categoría",
+      "aplicaciones_industriales": [
+        {
+          "title": "Hospitales y Clínicas",
+          "description": "Respaldo crítico para equipos médicos y quirófanos",
+          "icon": "🏥"
+        },
+        {
+          "title": "Centros de Datos",
+          "description": "Energía ininterrumpida para infraestructura TI crítica",
+          "icon": "💻"
+        },
+        {
+          "title": "Industria Manufacturera",
+          "description": "Continuidad operacional para líneas de producción",
+          "icon": "🏭"
+        },
+        {
+          "title": "Edificios Comerciales",
+          "description": "Respaldo para sistemas críticos y elevadores",
+          "icon": "🏢"
+        },
+        {
+          "title": "Instalaciones Agrícolas",
+          "description": "Energía confiable para sistemas de riego y refrigeración",
+          "icon": "🌾"
+        },
+        {
+          "title": "Telecomunicaciones",
+          "description": "Respaldo para antenas y centros de switching",
+          "icon": "📡"
+        }
+      ]
+    },
+
+    "DOCUMENTOS_Y_FAQS": {
+      "NOTA": "OPCIONAL - Array de documentos, FAQs, garantías, etc. Si no tiene, dejar array vacío []",
+      "IMPORTANTE": "Para compresores, hidrolavadoras, etc., adaptar el contenido a ese producto específico",
+      "documentos": []
     }
   },
 
