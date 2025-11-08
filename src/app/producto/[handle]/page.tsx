@@ -22,7 +22,7 @@ async function getProductByHandle(handle: string) {
   }
 
   // Get prices from variant
-  const prices = getVariantPrice(mainVariant)
+  const prices = await getVariantPrice(mainVariant)
 
   // Transform Medusa product to component-friendly format
   return {
