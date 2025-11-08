@@ -186,36 +186,6 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig }: PriceDispla
             </p>
           </div>
 
-          {/* Precios Mayoristas (si hay bonificación/descuento configurados) */}
-          {(bonificacion > 0 || descuentoContado > 0) && (
-            <div className="pt-4 border-t border-gray-200">
-              <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <Info className="w-4 h-4 text-blue-600" />
-                  <p className="text-sm font-semibold text-blue-900">¿Comprás para reventa?</p>
-                </div>
-                <p className="text-sm text-blue-700 mb-3">
-                  Tenemos precios especiales para distribuidores y mayoristas
-                </p>
-                <div className="bg-white rounded p-3">
-                  <p className="text-sm text-gray-700 mb-2">
-                    ✓ Bonificaciones por volumen
-                  </p>
-                  <p className="text-sm text-gray-700 mb-2">
-                    ✓ Descuentos por pago contado
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    ✓ Financiación disponible
-                  </p>
-                </div>
-                <div className="mt-3 pt-3 border-t border-blue-200">
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded text-sm transition-colors">
-                    📞 Contactar para precios mayoristas
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Stock */}
           <div className="pt-4 border-t border-gray-200">
