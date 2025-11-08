@@ -368,6 +368,116 @@ export default async function ProductPage({
                   </div>
                 </div>
 
+                {/* Atributos Principales - Badges de Características */}
+                <div className="space-y-3 py-4 border-t border-gray-200">
+                  <div className="flex flex-wrap gap-2">
+                    {/* Tipo de Combustible */}
+                    {product.metadata.combustible_tipo && (
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
+                        backgroundColor: product.metadata.combustible_tipo.toLowerCase().includes('diesel')
+                          ? '#FEF3C7'
+                          : product.metadata.combustible_tipo.toLowerCase().includes('nafta')
+                          ? '#DBEAFE'
+                          : '#D1FAE5',
+                        color: product.metadata.combustible_tipo.toLowerCase().includes('diesel')
+                          ? '#92400E'
+                          : product.metadata.combustible_tipo.toLowerCase().includes('nafta')
+                          ? '#1E40AF'
+                          : '#065F46'
+                      }}>
+                        <span>⛽</span>
+                        {product.metadata.combustible_tipo}
+                      </div>
+                    )}
+
+                    {/* TTA (Transferencia Automática) */}
+                    {(product.description?.toLowerCase().includes('tta incluido') ||
+                      product.description?.toLowerCase().includes('transferencia automática incluida')) && (
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
+                        backgroundColor: '#DCFCE7',
+                        color: '#166534'
+                      }}>
+                        <span>⚡</span>
+                        TTA Incluido
+                      </div>
+                    )}
+                    {product.description?.toLowerCase().includes('tta opcional') && (
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
+                        backgroundColor: '#FEF3C7',
+                        color: '#92400E'
+                      }}>
+                        <span>⚡</span>
+                        TTA Opcional
+                      </div>
+                    )}
+
+                    {/* Cabina */}
+                    {(product.description?.toLowerCase().includes('cabina') ||
+                      product.title.toLowerCase().includes('cabinado')) && (
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
+                        backgroundColor: '#E0E7FF',
+                        color: '#3730A3'
+                      }}>
+                        <span>🏠</span>
+                        Con Cabina
+                      </div>
+                    )}
+
+                    {/* Insonorizado con nivel dB */}
+                    {product.metadata.nivel_ruido_db && (
+                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border-2" style={{
+                        borderColor: Number(product.metadata.nivel_ruido_db) <= 65 ? '#10B981'
+                          : Number(product.metadata.nivel_ruido_db) <= 75 ? '#F59E0B'
+                          : '#EF4444',
+                        backgroundColor: Number(product.metadata.nivel_ruido_db) <= 65 ? '#D1FAE5'
+                          : Number(product.metadata.nivel_ruido_db) <= 75 ? '#FEF3C7'
+                          : '#FEE2E2',
+                        color: Number(product.metadata.nivel_ruido_db) <= 65 ? '#065F46'
+                          : Number(product.metadata.nivel_ruido_db) <= 75 ? '#92400E'
+                          : '#991B1B'
+                      }}>
+                        <span>🔊</span>
+                        {product.metadata.nivel_ruido_db} dB
+                        {/* Barra de nivel de ruido */}
+                        <div className="flex gap-0.5">
+                          {[...Array(5)].map((_, i) => (
+                            <div key={i} className="w-1 h-3 rounded-full" style={{
+                              backgroundColor: i < (5 - Math.floor(Number(product.metadata.nivel_ruido_db) / 20))
+                                ? '#10B981'
+                                : i < 3
+                                ? '#F59E0B'
+                                : '#EF4444',
+                              opacity: i < Math.ceil(Number(product.metadata.nivel_ruido_db) / 20) ? 1 : 0.2
+                            }}></div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Peso */}
+                    {product.metadata.peso_kg && (
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
+                        backgroundColor: '#F3F4F6',
+                        color: '#374151'
+                      }}>
+                        <span>⚖️</span>
+                        {product.metadata.peso_kg} kg
+                      </div>
+                    )}
+
+                    {/* Dimensiones */}
+                    {(product.metadata.largo_mm && product.metadata.ancho_mm && product.metadata.alto_mm) && (
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{
+                        backgroundColor: '#F3F4F6',
+                        color: '#374151'
+                      }}>
+                        <span>📏</span>
+                        {Math.round(Number(product.metadata.largo_mm)/10)}×{Math.round(Number(product.metadata.ancho_mm)/10)}×{Math.round(Number(product.metadata.alto_mm)/10)} cm
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {/* Características destacadas */}
                 <div className="space-y-3">
                   <h2 className="text-base font-bold text-gray-900">Lo que tenés que saber de este producto</h2>
