@@ -72,31 +72,44 @@ export function ScrollHijackingContainer({
 
   return (
     <div ref={containerRef} className="relative">
-      {/* Grid estilo MercadoLibre: 40% imagen, 60% info */}
-      <div className="grid lg:grid-cols-[40%_60%] gap-8">
-        {/* Left Column - Image (becomes sticky) */}
-        <div ref={imageRef} className="lg:sticky lg:top-24 lg:self-start">
+      {/* Grid estilo MercadoLibre: medidas exactas en px */}
+      <div className="flex gap-8 justify-center">
+        {/* Left Column - Image Gallery (becomes sticky) - 478px */}
+        <div
+          ref={imageRef}
+          className="lg:sticky lg:top-24 lg:self-start flex-shrink-0"
+          style={{ width: '478px', height: '504px' }}
+        >
           {imageContent}
         </div>
 
         {/* Right Side - Scrollable content container */}
         <div
           ref={contentRef}
-          className="overflow-y-auto"
+          className="overflow-y-auto flex-shrink-0"
           style={{
+            width: 'calc(100% - 478px - 32px)', // Resto del espacio menos galería y gap
+            maxWidth: '819px', // Panel info (descripción + precio) max
             maxHeight: "calc(100vh - 120px)",
             scrollbarWidth: "thin",
             scrollbarColor: "#CBD5E0 transparent",
           }}
         >
-          <div className="grid lg:grid-cols-[58%_42%] gap-8">
-            {/* Center Column - Description */}
-            <div className="space-y-3">
+          <div className="flex gap-8">
+            {/* Center Column - Description - flex para ocupar espacio disponible */}
+            <div className="flex-grow space-y-3 min-w-0">
               {centerContent}
             </div>
 
-            {/* Right Column - Price Card */}
-            <div className="bg-white border border-[#e0e0e0] rounded-md p-4">
+            {/* Right Column - Price Card - 309px fijo */}
+            <div
+              className="bg-white border border-[#e0e0e0] rounded-md flex-shrink-0"
+              style={{
+                width: '309px',
+                padding: '25px 16px',
+                minHeight: '632px'
+              }}
+            >
               {rightContent}
             </div>
           </div>

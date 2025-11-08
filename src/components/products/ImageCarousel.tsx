@@ -89,18 +89,19 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
   return (
     <>
     <div className="flex gap-3 w-full">
-      {/* Thumbnails - Vertical Left */}
+      {/* Thumbnails - Vertical Left - 60px */}
       {images.length > 1 && (
         <div className="flex flex-col gap-2 flex-shrink-0">
           {images.slice(0, maxVisibleThumbnails).map((image, index) => (
             <button
               key={image.id}
               onClick={() => scrollTo(index)}
-              className={`relative flex-shrink-0 w-12 h-12 rounded overflow-hidden transition-all bg-[#FDFBF7] ${
+              className={`relative flex-shrink-0 rounded overflow-hidden transition-all bg-[#FDFBF7] ${
                 index === selectedIndex
                   ? "ring-2 ring-blue-500"
                   : "ring-1 ring-gray-300 hover:ring-gray-400 opacity-70 hover:opacity-100"
               }`}
+              style={{ width: '60px', height: '60px' }}
             >
               <img
                 src={image.url}
@@ -115,7 +116,8 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
           {remainingImages > 0 && (
             <button
               onClick={() => openLightbox(maxVisibleThumbnails)}
-              className="relative flex-shrink-0 w-12 h-12 rounded overflow-hidden transition-all ring-1 ring-gray-300 hover:ring-gray-400 bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+              className="relative flex-shrink-0 rounded overflow-hidden transition-all ring-1 ring-gray-300 hover:ring-gray-400 bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+              style={{ width: '60px', height: '60px' }}
             >
               <span className="text-sm font-semibold text-gray-700">+{remainingImages}</span>
             </button>
@@ -134,12 +136,17 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
                   className="relative min-w-0 flex-[0_0_100%] cursor-pointer"
                   onClick={() => openLightbox(index)}
                 >
-                  <div className="w-full aspect-square">
+                  {/* Imagen principal: 358px × 504px centrada */}
+                  <div className="flex items-center justify-center" style={{ width: '100%', height: '504px' }}>
                     <img
                       src={image.url}
                       alt={`${title} - Imagen ${image.rank + 1}`}
-                      className="w-full h-full object-contain p-6"
-                      style={{ filter: 'brightness(0.9)' }}
+                      className="object-contain"
+                      style={{
+                        width: '358px',
+                        height: '504px',
+                        filter: 'brightness(0.9)'
+                      }}
                     />
                   </div>
                 </div>
