@@ -7,8 +7,8 @@ export const medusa = new Medusa({
   publishableKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "",
 })
 
-// Default region ID for USD (United States)
-const DEFAULT_REGION_ID = "reg_01K95YRJHQC630D0FZWYZPST3S"
+// Default region ID for Europe (EUR) - región existente en Medusa
+const DEFAULT_REGION_ID = "reg_01K9FZ96V1AT4PGR95NE8VYZ8N"
 
 /**
  * Fetch a product by its handle from Medusa API
