@@ -24,6 +24,24 @@ async function getProductByHandle(handle: string) {
   // Get prices from variant
   const prices = await getVariantPrice(mainVariant)
 
+  // Enrich all variants with price data
+  const enrichedVariants = await Promise.all(
+    (product.variants || []).map(async (variant: any) => {
+      const variantPrice = await getVariantPrice(variant)
+      return {
+        id: variant.id,
+        title: variant.title || product.title,
+        sku: variant.sku || "",
+        price: variantPrice,
+        metadata: variant.metadata || {},
+        weight: variant.weight,
+        length: variant.length,
+        width: variant.width,
+        height: variant.height,
+      }
+    })
+  )
+
   // Transform Medusa product to component-friendly format
   return {
     id: product.id,
@@ -47,11 +65,7 @@ async function getProductByHandle(handle: string) {
       url: img.url || "",
       alt: img.metadata?.alt || `${product.title} - Imagen ${index + 1}`,
     })),
-    variants: (product.variants || []).map((variant: any) => ({
-      id: variant.id,
-      title: variant.title || product.title,
-      sku: variant.sku || "",
-    })),
+    variants: enrichedVariants,
   }
 }
 
@@ -490,6 +504,7 @@ export default async function ProductPage({
             description={product.description}
             metadata={product.metadata}
             variants={product.variants}
+            productHandle={product.handle}
             weight={product.weight}
             length={product.length}
             width={product.width}

@@ -2,6 +2,9 @@
 
 import React, { useState } from "react";
 import { FileText, Settings, Zap, Package } from "lucide-react";
+import VariantSelector from "./VariantSelector";
+import CompatibleAccessories from "./CompatibleAccessories";
+import RelatedProducts from "./RelatedProducts";
 
 interface ProductInfoTabsProps {
   description?: string;
@@ -10,7 +13,18 @@ interface ProductInfoTabsProps {
     id: string;
     title: string;
     sku: string;
+    price?: {
+      priceWithoutTax: number;
+      priceWithTax: number;
+      currency: string;
+    };
+    metadata?: Record<string, any>;
+    weight?: number;
+    length?: number;
+    width?: number;
+    height?: number;
   }>;
+  productHandle?: string;
   // Dimensional fields from Medusa product
   weight?: number | null;
   length?: number | null;
@@ -20,7 +34,7 @@ interface ProductInfoTabsProps {
 
 type TabType = "descripcion" | "especificaciones" | "aplicaciones" | "variantes";
 
-export function ProductInfoTabs({ description, metadata, variants, weight, length, width, height }: ProductInfoTabsProps) {
+export function ProductInfoTabs({ description, metadata, variants, productHandle, weight, length, width, height }: ProductInfoTabsProps) {
   const [activeTab, setActiveTab] = useState<TabType>("descripcion");
   const [activeSpecSection, setActiveSpecSection] = useState<string>("motor");
   const contentRef = React.useRef<HTMLDivElement>(null);
@@ -445,21 +459,38 @@ export function ProductInfoTabs({ description, metadata, variants, weight, lengt
               <Package className="w-6 h-6 text-[#FF6B00]" />
               Variantes Disponibles
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {variants.map((variant) => (
-                <div
-                  key={variant.id}
-                  className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-[#FF6B00] hover:shadow-lg transition-all duration-300"
-                >
-                  <p className="font-semibold text-lg text-gray-900 mb-2">
-                    {variant.title}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">SKU:</span> {variant.sku}
-                  </p>
-                </div>
-              ))}
-            </div>
+
+            {/* Variant Selector Component */}
+            {variants && variants.length > 1 && (
+              <VariantSelector
+                variants={variants as any}
+                productHandle={productHandle || ""}
+              />
+            )}
+
+            {/* Compatible Accessories */}
+            {metadata?.accesorios_compatibles && metadata.accesorios_compatibles.length > 0 && (
+              <div className="mt-10">
+                <CompatibleAccessories accessories={metadata.accesorios_compatibles} />
+              </div>
+            )}
+
+            {/* Related Products */}
+            {metadata?.productos_relacionados && metadata.productos_relacionados.length > 0 && (
+              <div className="mt-10">
+                <RelatedProducts
+                  products={metadata.productos_relacionados}
+                  currentProductHandle={productHandle}
+                />
+              </div>
+            )}
+
+            {/* Services */}
+            {metadata?.servicios_disponibles && metadata.servicios_disponibles.length > 0 && (
+              <div className="mt-10">
+                <CompatibleAccessories accessories={metadata.servicios_disponibles} />
+              </div>
+            )}
           </div>
         )}
       </div>
