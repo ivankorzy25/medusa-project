@@ -1,549 +1,263 @@
--- ============================================
--- SCRIPT: Importación COMPLETA Cummins CS200S
--- ============================================
--- Este script crea el producto CS200S con TODA la información
--- disponible, siguiendo la estructura del CS200A que ya funciona.
---
--- BASADO EN:
---   - CS200A existente (estructura completa)
---   - Carpeta CS200S con JSON, MD, PDF e imágenes
---   - Precio: USD 28,707 (sin IVA)
---
--- INCLUYE:
---   ✓ Producto con metadata completa
---   ✓ Variant con especificaciones técnicas
---   ✓ 13 imágenes (product_images)
---   ✓ Taxonomía completa (Type, Collection, Categories, Tags)
---   ✓ Precios con IVA, bonificaciones y descuentos
--- ============================================
+-- =========================================================================
+-- IMPORTAR CS200S COMPLETO - SIGUIENDO ESTRUCTURA EXACTA DE CS200A
+-- =========================================================================
+-- PRODUCTO DE REFERENCIA: CS200A (estructura EXACTA con metadata duplicada)
+-- DATOS TÉCNICOS: Carpeta CS200S + Lista de Precios PDF
+-- DIFERENCIA CLAVE: CS200S es modelo SILENT/INSONORIZADO (71 dB)
+-- =========================================================================
 
--- ============================================
--- PASO 1: CREAR PRODUCTO PRINCIPAL
--- ============================================
+DO $$
+DECLARE
+  v_product_id text;
+  v_variant_id text;
+  v_price_set_id text;
+  v_price_usd_id text;
+  v_price_ars_id text;
+  v_image_id text;
+  v_region_id text;
+BEGIN
+  -- =========================================================================
+  -- GENERAR IDs
+  -- =========================================================================
+  v_product_id := 'prod_cs200s_' || gen_random_uuid()::text;
+  v_variant_id := 'variant_cs200s_' || gen_random_uuid()::text;
+  v_price_set_id := 'pset_cs200s_' || gen_random_uuid()::text;
+  v_price_usd_id := 'price_usd_cs200s_' || gen_random_uuid()::text;
+  v_price_ars_id := 'price_ars_cs200s_' || gen_random_uuid()::text;
 
-INSERT INTO product (
-  id,
-  title,
-  subtitle,
-  description,
-  handle,
-  is_giftcard,
-  thumbnail,
-  weight,
-  length,
-  height,
-  width,
-  hs_code,
-  origin_country,
-  mid_code,
-  material,
-  collection_id,
-  type_id,
-  discountable,
-  external_id,
-  created_at,
-  updated_at,
-  deleted_at,
-  metadata
-)
-VALUES (
-  'prod_cummins_cs200s',
-  'CUMMINS CS200S - Generador Diesel Industrial 200 KVA',
-  'Motor Cummins 6CTAA8.3-G | Alternador Stamford | Panel Comap MRS16 | Insonorizado 71dB',
-  'El CUMMINS CS200S es un generador diesel de alta gama diseñado para aplicaciones industriales críticas. Combina el legendario motor Cummins 6CTA83G2 de 8.3 litros turbo diesel intercooled con 241 HP, el alternador Stamford UCI274G1 de tecnología brushless, y el sofisticado panel de control Comap MRS16 con capacidad de arranque automático y monitoreo remoto. Su cabina insonorizada premium reduce el nivel de ruido a solo 71 dB, permitiendo operación en entornos urbanos. Con un tanque de 430 litros proporciona más de 12 horas de autonomía continua, haciéndolo ideal para hospitales, centros de datos, industrias y edificios comerciales donde la continuidad eléctrica es crítica.',
-  'cummins-cs200s',
-  false,
-  '/productos/cummins/cs200s/CS_200_S_20251014_153804_1.webp',
-  2500000,  -- 2500 kg en gramos
-  3200,     -- 3.2m en mm
-  2300,     -- 2.3m en mm
-  1200,     -- 1.2m en mm
-  '8502.11.00',
-  'cn',
-  NULL,
-  'Acero inoxidable, aislamiento acústico',
-  'pcoll_cummins_cs',
-  'ptype_generador_diesel',
-  true,
-  NULL,
-  NOW(),
-  NOW(),
-  NULL,
-  jsonb_build_object(
-    -- === INFORMACIÓN BÁSICA ===
-    'marca', 'Cummins',
-    'modelo', 'CS200S',
-    'familia', 'Línea CS',
-    'año_modelo', '2025',
-    'origen', 'China (motor y alternador ensamblados bajo licencia)',
-    'distribuidor', 'KOR Generadores / E-Gaucho',
+  RAISE NOTICE '';
+  RAISE NOTICE '=== IMPORTANDO CS200S - MODELO SILENT ===';
+  RAISE NOTICE 'Product ID: %', v_product_id;
+  RAISE NOTICE '';
 
-    -- === POTENCIA ===
-    'potencia_standby_kva', '200',
-    'potencia_standby_kw', '160',
-    'potencia_prime_kva', '180',
-    'potencia_prime_kw', '144',
-    'factor_potencia', '0.8',
+  -- =========================================================================
+  -- INSERTAR PRODUCTO (con metadata DUPLICADA igual que CS200A)
+  -- =========================================================================
+  INSERT INTO product (
+    id,
+    title,
+    subtitle,
+    description,
+    handle,
+    is_giftcard,
+    thumbnail,
+    status,
+    type_id,
+    collection_id,
+    created_at,
+    updated_at,
+    metadata
+  ) VALUES (
+    v_product_id,
+    'Generador Cummins CS200S - 200 KVA Silent',
+    '200 KVA Standby / 180 KVA Prime - Insonorizado 71 dB',
+    'Generador industrial Cummins CS200S de 200 KVA en modalidad Standby y 180 KVA en modalidad Prime. Motor Cummins 6CTA83G2 TDI de 8.3 litros turboalimentado e intercooled, 6 cilindros en línea. Alternador Stamford UCI274G1 sin escobillas. Panel de control digital ComAp InteliLite MRS16 con arranque automático. Cabina insonorizada premium con nivel de ruido de 71 dB a 7 metros. Tanque de combustible de 430 litros con autonomía de 12.3 horas al 75% de carga. Refrigeración por agua. Dimensiones: 3230 x 1170 x 1800 mm. Peso operativo: 2880 kg. Ideal para aplicaciones industriales, comerciales y residenciales que requieren bajo nivel de ruido.',
+    'cummins-cs200s',
+    false,
+    'http://localhost:9000/static/CS 200 S_20251014_153804_6.webp',
+    'published',
+    'ptyp_generadores',
+    'pcol_cummins_cs',
+    NOW(),
+    NOW(),
+    '{"pricing_config": {"familia": "Generadores Cummins - Línea CS", "currency_type": "usd_blue", "iva_percentage": 10.5, "precio_lista_usd": 28707, "bonificacion_percentage": 11, "descuento_contado_percentage": 9}, "fases": "Trifásico", "voltaje": "220/380V", "motor_rpm": 1500, "motor_marca": "Cummins", "motor_modelo": "6CTA83G2 TDI", "vendor": "Cummins Power Generation", "trust": "Oficial", "ubicacion": "Disponible", "garantia": "12 meses", "aplicacion": "Industrial, Comercial, Residencial Premium", "tipo_uso": "Standby / Prime Power", "insonorizado": "Sí - 71 dB @ 7m", "cabina": "Silent Premium"}'::jsonb
+  );
 
-    -- === MOTOR ===
-    'motor_marca', 'Cummins',
-    'motor_modelo', '6CTAA8.3-G',
-    'motor_fabricante', 'Cummins Inc. (USA)',
-    'motor_potencia_hp', '241',
-    'motor_potencia_kw', '180',
-    'motor_cilindros', '6',
-    'motor_tipo_cilindros', 'En línea',
-    'motor_cilindrada', '8.3',
-    'motor_cilindrada_unidad', 'litros',
-    'motor_aspiracion', 'Turbo Diesel Intercooled (TDI)',
-    'motor_rpm', '1500',
-    'motor_refrigeracion', 'Agua',
-    'tipo_refrigeracion', 'Agua',
-    'motor_tipo', 'Diesel 4 tiempos',
-    'motor_relacion_compresion', '17.3:1',
-    'motor_vida_util_horas', '30000',
+  RAISE NOTICE '✅ Producto CS200S creado';
 
-    -- === ALTERNADOR ===
-    'alternador_marca', 'Stamford',
-    'alternador_modelo', 'UCI274G1',
-    'alternador_tipo', 'Brushless (sin escobillas)',
-    'alternador_tecnologia', 'AVR digital',
-    'alternador_clase_aislamiento', 'H',
-    'alternador_proteccion_ip', 'IP23',
-    'alternador_eficiencia', '94',
+  -- =========================================================================
+  -- INSERTAR VARIANT (con metadata DUPLICADA + especificaciones_tecnicas)
+  -- =========================================================================
+  INSERT INTO product_variant (
+    id,
+    title,
+    product_id,
+    sku,
+    barcode,
+    ean,
+    upc,
+    allow_backorder,
+    manage_inventory,
+    hs_code,
+    origin_country,
+    mid_code,
+    material,
+    weight,
+    length,
+    height,
+    width,
+    created_at,
+    updated_at,
+    metadata
+  ) VALUES (
+    v_variant_id,
+    'Cummins CS200S - 200 KVA Silent',
+    v_product_id,
+    'GEN-CS200S',
+    NULL,
+    NULL,
+    NULL,
+    false,
+    true,
+    '850211',
+    'China',
+    'GEN-CS200S',
+    NULL,
+    2450000,
+    3230,
+    1800,
+    1170,
+    NOW(),
+    NOW(),
+    '{"pricing_config": {"familia": "Generadores Cummins - Línea CS", "currency_type": "usd_blue", "iva_percentage": 10.5, "precio_lista_usd": 28707, "bonificacion_percentage": 11, "descuento_contado_percentage": 9}, "especificaciones_tecnicas": {"potencia": {"standby_kva": 200, "standby_kw": 160, "prime_kva": 180, "prime_kw": 144, "factor_potencia": 0.8, "tension": "380/220V", "frecuencia": "50 Hz", "fases": 3}, "motor": {"marca": "Cummins", "modelo": "6CTA83G2 TDI", "tipo": "Diesel 4 tiempos, Turbo Diesel Intercooled", "cilindros": 6, "cilindrada_litros": 8.3, "potencia_hp": 241, "potencia_kw": 180, "velocidad_rpm": 1500, "consumo_75_lh": 35, "consumo_100_lh": 45, "capacidad_aceite_litros": 24, "refrigeracion": "Por agua", "turboalimentado": true}, "alternador": {"marca": "Stamford", "modelo": "UCI274G1", "tipo": "Sin escobillas (Brushless)", "excitacion": "Autoexcitado"}, "panel_control": {"marca": "ComAp", "modelo": "InteliLite MRS16", "tipo": "Digital LCD", "arranque_automatico": true, "caracteristicas": ["Tablero digital", "Auto-start", "Parada de emergencia"]}, "combustible": {"tipo": "Diesel", "capacidad_tanque_litros": 430, "autonomia_75_horas": 12.3, "autonomia_100_horas": 10}, "insonorizacion": {"cabina": "Silent Premium", "nivel_ruido_db": 71, "distancia_metros": 7}, "dimensiones": {"largo_mm": 3230, "ancho_mm": 1170, "alto_mm": 1800, "peso_kg": 2450, "peso_operativo_kg": 2880}, "caracteristicas_principales": ["Motor Cummins turboalimentado", "Alternador Stamford brushless", "Cabina insonorizada 71 dB", "Panel de control digital ComAp", "Arranque automático", "Tanque de 430 litros", "Autonomía 12+ horas"]}}'::jsonb
+  );
 
-    -- === ELÉCTRICO ===
-    'voltaje_salida', '220/380V',
-    'voltaje_nominal', '380',
-    'fases', 'Trifásico',
-    'frecuencia', '50Hz',
-    'corriente_standby_amp', '304',
-    'corriente_prime_amp', '274',
-    'conexion', '3F + N + T',
+  RAISE NOTICE '✅ Variant CS200S creado con dimensiones y metadata completa';
 
-    -- === COMBUSTIBLE Y AUTONOMÍA ===
-    'combustible_tipo', 'Diesel / Gasoil',
-    'combustible_capacidad_tanque', '430',
-    'combustible_consumo_75_carga', '35',
-    'autonomia_horas_75_carga', '12.3',
-    'autonomia_horas_50_carga', '18',
-    'autonomia_horas_25_carga', '24',
+  -- =========================================================================
+  -- CREAR PRICE SET Y PRECIOS (USD y ARS)
+  -- =========================================================================
+  SELECT id INTO v_region_id FROM region WHERE name = 'Argentina' LIMIT 1;
 
-    -- === PANEL DE CONTROL ===
-    'panel_control_marca', 'Comap',
-    'panel_control_modelo', 'MRS16',
-    'panel_control_tipo', 'Digital con pantalla LCD',
-    'panel_control_funciones', 'Auto start, Monitoreo remoto, ModBus',
-    'tipo_arranque', 'Eléctrico automático',
-    'arranque_automatico', 'Sí',
-    'sistema_transferencia', 'ATS integrado',
+  INSERT INTO price_set (id, created_at, updated_at)
+  VALUES (v_price_set_id, NOW(), NOW());
 
-    -- === INSONORIZACIÓN ===
-    'nivel_ruido_db', '71',
-    'nivel_ruido_distancia', '7 metros',
-    'tipo_cabina', 'Insonorizada premium',
-    'insonorizado', 'Sí',
+  INSERT INTO price (id, price_set_id, currency_code, amount, raw_amount, created_at, updated_at)
+  VALUES (v_price_usd_id, v_price_set_id, 'usd', 2870700, '{"value": "2870700"}'::jsonb, NOW(), NOW());
 
-    -- === DIMENSIONES Y PESO ===
-    'largo_mm', '3200',
-    'ancho_mm', '1200',
-    'alto_mm', '2300',
-    'peso_kg', '2500',
+  INSERT INTO price (id, price_set_id, currency_code, amount, raw_amount, created_at, updated_at)
+  VALUES (v_price_ars_id, v_price_set_id, 'ars', 3960834400, '{"value": "3960834400"}'::jsonb, NOW(), NOW());
 
-    -- === CARACTERÍSTICAS ESPECIALES ===
-    'certificaciones', 'CE, ISO 9001, Cummins Certified',
-    'garantia_motor', '2 años o 2000 horas',
-    'garantia_alternador', '2 años',
-    'garantia_equipo', '1 año',
-    'aplicaciones', 'Hospitales, Centros de datos, Industrias, Edificios comerciales',
-    'modo_operacion', 'Standby/Prime',
+  INSERT INTO product_variant_price_set (id, variant_id, price_set_id, created_at, updated_at)
+  VALUES (gen_random_uuid()::text, v_variant_id, v_price_set_id, NOW(), NOW());
 
-    -- === INCLUYE ===
-    'incluye', 'Cargador de batería, Baterías, Radiador, Silenciador, Sistema de escape, Manual de operación en español',
+  RAISE NOTICE '✅ Precios configurados (USD 28,707)';
 
-    -- === VENTAJAS COMPETITIVAS ===
-    'ventajas', 'Motor Cummins original, Bajo consumo 35 L/h, Autonomía 12+ horas, Nivel de ruido ultra bajo 71dB, Monitoreo remoto 24/7',
+  -- =========================================================================
+  -- ASIGNAR SALES CHANNEL (CRÍTICO)
+  -- =========================================================================
+  INSERT INTO product_sales_channel (id, product_id, sales_channel_id, created_at, updated_at)
+  VALUES (gen_random_uuid()::text, v_product_id, 'sc_01K9FZ84KQM1PG94Q6YT6248EW', NOW(), NOW());
 
-    -- === SEO ===
-    'seo_keywords', 'generador cummins, cs200s, 200 kva, diesel, insonorizado, industrial, standby, prime, trifasico',
-    'seo_description', 'Generador Cummins CS200S 200 KVA diesel industrial con motor 6CTAA8.3-G, alternador Stamford, panel Comap MRS16. Insonorizado 71dB. Ideal para hospitales, industrias y centros de datos.'
-  )
-)
-ON CONFLICT (id) DO UPDATE SET
-  title = EXCLUDED.title,
-  subtitle = EXCLUDED.subtitle,
-  description = EXCLUDED.description,
-  metadata = EXCLUDED.metadata,
-  updated_at = NOW();
+  RAISE NOTICE '✅ Sales Channel asignado';
 
--- ============================================
--- PASO 2: CREAR VARIANT (SKU)
--- ============================================
+  -- =========================================================================
+  -- ASIGNAR CATEGORÍA (100-200 KVA)
+  -- =========================================================================
+  INSERT INTO product_category_product (product_category_id, product_id)
+  VALUES ('pcat_gen_diesel_100_200', v_product_id);
 
-INSERT INTO product_variant (
-  id,
-  title,
-  product_id,
-  sku,
-  barcode,
-  ean,
-  upc,
-  inventory_quantity,
-  allow_backorder,
-  manage_inventory,
-  hs_code,
-  origin_country,
-  mid_code,
-  material,
-  weight,
-  length,
-  height,
-  width,
-  variant_rank,
-  created_at,
-  updated_at,
-  deleted_at,
-  metadata
-)
-VALUES (
-  'variant_cummins_cs200s_std',
-  'Configuración Estándar',
-  'prod_cummins_cs200s',
-  'GEN-CUM-CS200S-STD',
-  '7798345200203',
-  NULL,
-  NULL,
-  5,
-  true,
-  true,
-  '8502.11.00',
-  'cn',
-  NULL,
-  'Acero inoxidable, aislamiento acústico',
-  2500000,
-  3200,
-  2300,
-  1200,
-  0,
-  NOW(),
-  NOW(),
-  NULL,
-  jsonb_build_object(
-    'configuracion', 'Estándar',
-    'incluye_instalacion', false,
-    'incluye_mantenimiento', false,
-    'disponibilidad', 'En stock',
-    'tiempo_entrega_dias', '15-20',
-    'garantia_extendida_disponible', true
-  )
-)
-ON CONFLICT (id) DO UPDATE SET
-  title = EXCLUDED.title,
-  sku = EXCLUDED.sku,
-  metadata = EXCLUDED.metadata,
-  updated_at = NOW();
+  RAISE NOTICE '✅ Categoría asignada';
 
--- ============================================
--- PASO 3: CREAR PRECIOS
--- ============================================
+  -- =========================================================================
+  -- ASIGNAR TAGS (11 tags: 10 comunes + insonorizado)
+  -- =========================================================================
+  INSERT INTO product_tags (product_id, product_tag_id) VALUES
+    (v_product_id, 'ptag_diesel'),
+    (v_product_id, 'ptag_cummins'),
+    (v_product_id, 'ptag_industrial'),
+    (v_product_id, 'ptag_estacionario'),
+    (v_product_id, 'ptag_automatico'),
+    (v_product_id, 'ptag_trifasico'),
+    (v_product_id, 'ptag_standby'),
+    (v_product_id, 'ptag_prime'),
+    (v_product_id, 'ptag_stamford'),
+    (v_product_id, 'ptag_100200kva'),
+    (v_product_id, 'ptag_insonorizado');
 
--- Precio base sin IVA: USD 28,707
--- IVA 10.5%: USD 3,014.24
--- Precio con IVA: USD 31,721.24
+  RAISE NOTICE '✅ 11 Tags asignados (incluido insonorizado)';
 
--- Precio en USD
-INSERT INTO price (
-  id,
-  currency_code,
-  amount,
-  min_quantity,
-  max_quantity,
-  price_list_id,
-  created_at,
-  updated_at
-)
-VALUES (
-  'price_cs200s_usd',
-  'usd',
-  2870700,  -- USD 28,707.00 (sin IVA, en centavos)
-  NULL,
-  NULL,
-  NULL,
-  NOW(),
-  NOW()
-)
-ON CONFLICT (id) DO UPDATE SET
-  amount = EXCLUDED.amount,
-  updated_at = NOW();
+  -- =========================================================================
+  -- INSERTAR IMÁGENES (13 imágenes ordenadas por tamaño)
+  -- =========================================================================
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_6.webp', 1, v_product_id, NOW(), NOW());
 
--- Vincular precio con variant
-INSERT INTO product_variant_price_set (
-  id,
-  created_at,
-  updated_at
-)
-VALUES (
-  'pvps_cs200s',
-  NOW(),
-  NOW()
-)
-ON CONFLICT (id) DO NOTHING;
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_4.webp', 2, v_product_id, NOW(), NOW());
 
-INSERT INTO price_set_money_amount (
-  id,
-  price_set_id,
-  price_list_id,
-  title,
-  currency_code,
-  amount,
-  min_quantity,
-  max_quantity,
-  created_at,
-  updated_at
-)
-VALUES (
-  'psma_cs200s_usd',
-  'pvps_cs200s',
-  NULL,
-  'Precio base USD',
-  'usd',
-  2870700,  -- USD 28,707.00 en centavos
-  NULL,
-  NULL,
-  NOW(),
-  NOW()
-)
-ON CONFLICT (id) DO UPDATE SET
-  amount = EXCLUDED.amount,
-  updated_at = NOW();
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_1.webp', 3, v_product_id, NOW(), NOW());
 
--- Vincular price_set con variant
-UPDATE product_variant
-SET price_set_id = 'pvps_cs200s'
-WHERE id = 'variant_cummins_cs200s_std';
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_2.webp', 4, v_product_id, NOW(), NOW());
 
--- ============================================
--- PASO 4: CREAR IMÁGENES
--- ============================================
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_12.webp', 5, v_product_id, NOW(), NOW());
 
--- Crear registros de imagen
-INSERT INTO image (id, url, created_at, updated_at, deleted_at, metadata)
-VALUES
-  ('img_cs200s_01', '/productos/cummins/cs200s/CS_200_S_20251014_153804_1.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Vista frontal completa", "order": 1}'),
-  ('img_cs200s_02', '/productos/cummins/cs200s/CS_200_S_20251014_153804_2.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Vista lateral derecha", "order": 2}'),
-  ('img_cs200s_03', '/productos/cummins/cs200s/CS_200_S_20251014_153804_3.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Panel de control Comap MRS16", "order": 3}'),
-  ('img_cs200s_04', '/productos/cummins/cs200s/CS_200_S_20251014_153804_4.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Motor Cummins 6CTAA8.3-G", "order": 4}'),
-  ('img_cs200s_05', '/productos/cummins/cs200s/CS_200_S_20251014_153804_5.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Alternador Stamford UCI274G1", "order": 5}'),
-  ('img_cs200s_06', '/productos/cummins/cs200s/CS_200_S_20251014_153804_6.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Vista posterior", "order": 6}'),
-  ('img_cs200s_07', '/productos/cummins/cs200s/CS_200_S_20251014_153804_7.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Detalle cabina insonorizada", "order": 7}'),
-  ('img_cs200s_08', '/productos/cummins/cs200s/CS_200_S_20251014_153804_8.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Sistema de escape y silenciador", "order": 8}'),
-  ('img_cs200s_09', '/productos/cummins/cs200s/CS_200_S_20251014_153804_9.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Radiador y sistema de refrigeración", "order": 9}'),
-  ('img_cs200s_10', '/productos/cummins/cs200s/CS_200_S_20251014_153804_10.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Tanque de combustible 430L", "order": 10}'),
-  ('img_cs200s_11', '/productos/cummins/cs200s/CS_200_S_20251014_153804_11.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Conexiones eléctricas", "order": 11}'),
-  ('img_cs200s_12', '/productos/cummins/cs200s/CS_200_S_20251014_153804_12.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Sistema ATS integrado", "order": 12}'),
-  ('img_cs200s_13', '/productos/cummins/cs200s/CS_200_S_20251014_153804_13.webp', NOW(), NOW(), NULL, '{"alt": "Cummins CS200S - Vista general instalado", "order": 13}')
-ON CONFLICT (id) DO UPDATE SET
-  url = EXCLUDED.url,
-  metadata = EXCLUDED.metadata,
-  updated_at = NOW();
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_5.webp', 6, v_product_id, NOW(), NOW());
 
--- Vincular imágenes con producto
-INSERT INTO product_images (product_id, image_id)
-VALUES
-  ('prod_cummins_cs200s', 'img_cs200s_01'),
-  ('prod_cummins_cs200s', 'img_cs200s_02'),
-  ('prod_cummins_cs200s', 'img_cs200s_03'),
-  ('prod_cummins_cs200s', 'img_cs200s_04'),
-  ('prod_cummins_cs200s', 'img_cs200s_05'),
-  ('prod_cummins_cs200s', 'img_cs200s_06'),
-  ('prod_cummins_cs200s', 'img_cs200s_07'),
-  ('prod_cummins_cs200s', 'img_cs200s_08'),
-  ('prod_cummins_cs200s', 'img_cs200s_09'),
-  ('prod_cummins_cs200s', 'img_cs200s_10'),
-  ('prod_cummins_cs200s', 'img_cs200s_11'),
-  ('prod_cummins_cs200s', 'img_cs200s_12'),
-  ('prod_cummins_cs200s', 'img_cs200s_13')
-ON CONFLICT (product_id, image_id) DO NOTHING;
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_10.webp', 7, v_product_id, NOW(), NOW());
 
--- ============================================
--- PASO 5: ASIGNAR TAXONOMÍA
--- ============================================
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_8.webp', 8, v_product_id, NOW(), NOW());
 
--- TYPE (Tipo de Producto)
-UPDATE product
-SET type_id = 'ptype_generador_diesel'
-WHERE id = 'prod_cummins_cs200s';
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_9.webp', 9, v_product_id, NOW(), NOW());
 
--- COLLECTION (Familia/Línea)
-UPDATE product
-SET collection_id = 'pcoll_cummins_cs'
-WHERE id = 'prod_cummins_cs200s';
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_7.webp', 10, v_product_id, NOW(), NOW());
 
--- CATEGORIES (Categorías por potencia)
-INSERT INTO product_category_product (product_category_id, product_id)
-VALUES ('pcat_gen_diesel_100_200', 'prod_cummins_cs200s')
-ON CONFLICT DO NOTHING;
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_13.webp', 11, v_product_id, NOW(), NOW());
 
--- TAGS (Etiquetas)
-INSERT INTO product_tags (product_id, product_tag_id)
-VALUES
-  -- Combustible y motor
-  ('prod_cummins_cs200s', 'ptag_diesel'),
-  ('prod_cummins_cs200s', 'ptag_cummins'),
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_11.webp', 12, v_product_id, NOW(), NOW());
 
-  -- Aplicación
-  ('prod_cummins_cs200s', 'ptag_industrial'),
-  ('prod_cummins_cs200s', 'ptag_estacionario'),
+  v_image_id := substring(md5(random()::text) from 1 for 6);
+  INSERT INTO image (id, url, rank, product_id, created_at, updated_at)
+  VALUES (v_image_id, 'http://localhost:9000/static/CS 200 S_20251014_153804_3.webp', 13, v_product_id, NOW(), NOW());
 
-  -- Características
-  ('prod_cummins_cs200s', 'ptag_automatico'),
-  ('prod_cummins_cs200s', 'ptag_insonorizado'),  -- DIFERENCIA: CS200S es insonorizado (Silent), CS200A no
+  RAISE NOTICE '✅ 13 Imágenes insertadas';
 
-  -- Configuración eléctrica
-  ('prod_cummins_cs200s', 'ptag_trifasico'),
+  RAISE NOTICE '';
+  RAISE NOTICE '╔════════════════════════════════════════════════════════════╗';
+  RAISE NOTICE '║         CS200S IMPORTADO EXITOSAMENTE                      ║';
+  RAISE NOTICE '╚════════════════════════════════════════════════════════════╝';
+  RAISE NOTICE '';
+  RAISE NOTICE '📦 Handle: cummins-cs200s';
+  RAISE NOTICE '⚙️  SKU: GEN-CS200S';
+  RAISE NOTICE '💰 Precio: USD 28,707';
+  RAISE NOTICE '🔧 Potencia: 200 KVA Standby / 180 KVA Prime';
+  RAISE NOTICE '🔇 Insonorizado: 71 dB @ 7m';
+  RAISE NOTICE '🏷️  Tags: 11 (incluido insonorizado)';
+  RAISE NOTICE '🖼️  Imágenes: 13';
+  RAISE NOTICE '';
+  RAISE NOTICE '🌐 Frontend: http://localhost:3000/producto/cummins-cs200s';
+  RAISE NOTICE '';
+END $$;
 
-  -- Modo de operación
-  ('prod_cummins_cs200s', 'ptag_standby'),
-  ('prod_cummins_cs200s', 'ptag_prime'),
-
-  -- Marca alternador
-  ('prod_cummins_cs200s', 'ptag_stamford'),
-
-  -- Rango de potencia
-  ('prod_cummins_cs200s', 'ptag_100200kva')
-ON CONFLICT DO NOTHING;
-
--- ============================================
--- PASO 6: CREAR SALES CHANNELS
--- ============================================
-
--- Asignar a canal de ventas por defecto
-INSERT INTO product_sales_channel (product_id, sales_channel_id)
+-- Verificación
 SELECT
-  'prod_cummins_cs200s',
-  id
-FROM sales_channel
-WHERE name = 'Default Sales Channel'
-ON CONFLICT DO NOTHING;
-
--- ============================================
--- VERIFICACIÓN FINAL
--- ============================================
-
--- Mostrar resumen del producto creado
-SELECT
-  '=== PRODUCTO CREADO ===' as seccion,
-  p.id,
-  p.title,
   p.handle,
-  pt.value as tipo,
-  pc.title as coleccion,
-  COUNT(DISTINCT pcp.product_category_id) as num_categorias,
-  COUNT(DISTINCT ptags.product_tag_id) as num_tags,
-  COUNT(DISTINCT pi.image_id) as num_imagenes
+  pv.weight,
+  pv.hs_code,
+  pv.mid_code,
+  pv.origin_country,
+  length(pv.metadata::text) as metadata_size,
+  COUNT(DISTINCT img.id) as images,
+  COUNT(DISTINCT psc.sales_channel_id) as sales_channels,
+  COUNT(DISTINCT pcp.product_category_id) as categories,
+  COUNT(DISTINCT pt.product_tag_id) as tags
 FROM product p
-LEFT JOIN product_type pt ON p.type_id = pt.id
-LEFT JOIN product_collection pc ON p.collection_id = pc.id
+JOIN product_variant pv ON p.id = pv.product_id
+LEFT JOIN image img ON p.id = img.product_id
+LEFT JOIN product_sales_channel psc ON p.id = psc.product_id
 LEFT JOIN product_category_product pcp ON p.id = pcp.product_id
-LEFT JOIN product_tags ptags ON p.id = ptags.product_id
-LEFT JOIN product_images pi ON p.id = pi.product_id
-WHERE p.id = 'prod_cummins_cs200s'
-GROUP BY p.id, p.title, p.handle, pt.value, pc.title;
-
--- Mostrar variante
-SELECT
-  '=== VARIANTE ===' as seccion,
-  pv.id,
-  pv.title,
-  pv.sku,
-  pv.inventory_quantity as stock
-FROM product_variant pv
-WHERE pv.product_id = 'prod_cummins_cs200s';
-
--- Mostrar precios
-SELECT
-  '=== PRECIOS ===' as seccion,
-  psma.currency_code,
-  psma.amount / 100.0 as precio_sin_iva,
-  (psma.amount * 1.105) / 100.0 as precio_con_iva_10_5
-FROM product_variant pv
-JOIN product_variant_price_set pvps ON pv.price_set_id = pvps.id
-JOIN price_set_money_amount psma ON pvps.id = psma.price_set_id
-WHERE pv.product_id = 'prod_cummins_cs200s';
-
--- Mostrar categorías
-SELECT
-  '=== CATEGORÍAS ===' as seccion,
-  pcat.name as categoria,
-  pcat.handle
-FROM product_category_product pcp
-JOIN product_category pcat ON pcp.product_category_id = pcat.id
-WHERE pcp.product_id = 'prod_cummins_cs200s'
-ORDER BY pcat.mpath;
-
--- Mostrar tags
-SELECT
-  '=== TAGS ===' as seccion,
-  string_agg(ptag.value, ', ' ORDER BY ptag.value) as tags
-FROM product_tags ptags
-JOIN product_tag ptag ON ptags.product_tag_id = ptag.id
-WHERE ptags.product_id = 'prod_cummins_cs200s';
-
--- Mostrar imágenes
-SELECT
-  '=== IMÁGENES ===' as seccion,
-  COUNT(*) as total_imagenes,
-  string_agg(i.url, E'\n' ORDER BY (i.metadata->>'order')::int) as urls
-FROM product_images pi
-JOIN image i ON pi.image_id = i.id
-WHERE pi.product_id = 'prod_cummins_cs200s';
-
--- Verificar campos de metadata clave
-SELECT
-  '=== METADATA CLAVE ===' as seccion,
-  jsonb_object_keys(metadata) as campo,
-  metadata->>jsonb_object_keys(metadata) as valor
-FROM product
-WHERE id = 'prod_cummins_cs200s'
-ORDER BY campo;
-
--- ============================================
--- RESULTADO ESPERADO
--- ============================================
--- ✅ Producto creado: prod_cummins_cs200s
--- ✅ Título: CUMMINS CS200S - Generador Diesel Industrial 200 KVA
--- ✅ Handle: cummins-cs200s
--- ✅ Tipo: Generador Diesel
--- ✅ Colección: Generadores Cummins - Línea CS
--- ✅ Categorías: 1 (100 a 200 KVA)
--- ✅ Tags: 11 (diesel, cummins, industrial, estacionario, automatico,
---              insonorizado, trifasico, standby, prime, stamford, 100-200kva)
--- ✅ Imágenes: 13 imágenes
--- ✅ Precio: USD 28,707 (sin IVA) / USD 31,721.24 (con IVA 10.5%)
--- ✅ Metadata: 60+ campos completos
--- ✅ Variant: 1 configuración estándar
--- ✅ Stock: 5 unidades disponibles
---
--- DIFERENCIAS CON CS200A:
--- • CS200S tiene tag "insonorizado" (Silent - 71dB)
--- • CS200A NO tiene tag "insonorizado" (sin cabina - 95dB)
--- • CS200S pesa 2500 kg (con cabina)
--- • CS200A pesa 1900 kg (sin cabina)
--- • CS200S: USD 28,707
--- • CS200A: USD 26,411
--- • Diferencia: +USD 2,296 por cabina insonorizada
--- ============================================
-
-RAISE NOTICE '============================================';
-RAISE NOTICE 'IMPORTACIÓN COMPLETA CS200S FINALIZADA';
-RAISE NOTICE '============================================';
-RAISE NOTICE 'Producto: CUMMINS CS200S';
-RAISE NOTICE 'Handle: cummins-cs200s';
-RAISE NOTICE 'Precio: USD 28,707 (sin IVA)';
-RAISE NOTICE 'Precio con IVA 10.5%%: USD 31,721.24';
-RAISE NOTICE 'Stock: 5 unidades';
-RAISE NOTICE 'Imágenes: 13';
-RAISE NOTICE 'Tags: 11 (incluye insonorizado)';
-RAISE NOTICE '============================================';
-RAISE NOTICE 'Verificar en: http://localhost:9000/products/cummins-cs200s';
-RAISE NOTICE '============================================';
+LEFT JOIN product_tags pt ON p.id = pt.product_id
+WHERE p.handle = 'cummins-cs200s'
+GROUP BY p.handle, pv.weight, pv.hs_code, pv.mid_code, pv.origin_country, pv.metadata;

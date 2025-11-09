@@ -52,7 +52,7 @@ export function ProductTabs({ documents, className }: ProductTabsProps) {
     <div className={cn("w-full", className)}>
       <Tabs defaultValue={defaultTab} className="w-full">
         <TabsList className="w-full justify-start h-auto flex-wrap gap-2 bg-gray-100 p-2 rounded-lg">
-          {sortedDocuments.map((doc) => {
+          {sortedDocuments.map((doc, index) => {
             const IconComponent =
               TAB_ICONS[doc.document_type as keyof typeof TAB_ICONS] || FileText
             const label =
@@ -61,21 +61,21 @@ export function ProductTabs({ documents, className }: ProductTabsProps) {
 
             return (
               <TabsTrigger
-                key={doc.id}
+                key={`${doc.document_type}-${index}`}
                 value={doc.document_type}
                 className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 <IconComponent className="h-4 w-4" />
                 <span className="hidden sm:inline">{label}</span>
-                <span className="sm:hidden">{label.split(" ")[0]}</span>
+                <span className="sm:hidden">{label?.split(" ")[0] || label}</span>
               </TabsTrigger>
             )
           })}
         </TabsList>
 
-        {sortedDocuments.map((doc) => (
+        {sortedDocuments.map((doc, index) => (
           <TabsContent
-            key={doc.id}
+            key={`content-${doc.document_type}-${index}`}
             value={doc.document_type}
             className="mt-6 space-y-4"
           >
