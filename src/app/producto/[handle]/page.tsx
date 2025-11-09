@@ -490,6 +490,10 @@ export default async function ProductPage({
             description={product.description}
             metadata={product.metadata}
             variants={product.variants}
+            weight={product.weight}
+            length={product.length}
+            width={product.width}
+            height={product.height}
           />
         </div>
 
