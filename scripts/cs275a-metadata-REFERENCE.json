@@ -1,0 +1,74 @@
+ {                                                           +
+     "pricing_config": {                                     +
+         "familia": "Generadores Cummins - Línea CS",        +
+         "currency_type": "usd_blue",                        +
+         "iva_percentage": 10.5,                             +
+         "precio_lista_usd": 32720,                          +
+         "bonificacion_percentage": 11,                      +
+         "descuento_contado_percentage": 9                   +
+     },                                                      +
+     "especificaciones_tecnicas": {                          +
+         "motor": {                                          +
+             "tipo": "6 cilindros en linea, turboalimentado",+
+             "marca": "Cummins",                             +
+             "modelo": "6LTAA8.9-G2 TDI",                    +
+             "cilindros": 6,                                 +
+             "potencia_hp": 326,                             +
+             "consumo_75_lh": 45,                            +
+             "refrigeracion": "Por agua",                    +
+             "velocidad_rpm": 1500,                          +
+             "turboalimentado": true,                        +
+             "cilindrada_litros": 8.9,                       +
+             "capacidad_aceite_litros": 27.6                 +
+         },                                                  +
+         "potencia": {                                       +
+             "fases": 3,                                     +
+             "tension": "380/220V",                          +
+             "prime_kw": 200,                                +
+             "prime_kva": 250,                               +
+             "frecuencia": "50 Hz",                          +
+             "standby_kw": 220,                              +
+             "standby_kva": 275,                             +
+             "factor_potencia": 0.8                          +
+         },                                                  +
+         "alternador": {                                     +
+             "tipo": "Sin escobillas (Brushless)",           +
+             "marca": "Stamford",                            +
+             "modelo": "UCI274",                             +
+             "excitacion": "Autoexcitado"                    +
+         },                                                  +
+         "combustible": {                                    +
+             "tipo": "Diesel",                               +
+             "autonomia_75_horas": 14.9,                     +
+             "capacidad_tanque_litros": 670                  +
+         },                                                  +
+         "dimensiones": {                                    +
+             "alto_mm": 1670,                                +
+             "peso_kg": 2200,                                +
+             "ancho_mm": 950,                                +
+             "largo_mm": 2540                                +
+         },                                                  +
+         "panel_control": {                                  +
+             "tipo": "Electronico LCD",                      +
+             "marca": "COMAP",                               +
+             "modelo": "AMF25",                              +
+             "caracteristicas": [                            +
+                 "Tablero digital",                          +
+                 "Auto-start",                               +
+                 "Parada de emergencia externa"              +
+             ],                                              +
+             "arranque_automatico": true                     +
+         },                                                  +
+         "caracteristicas_principales": [                    +
+             "Motor turboalimentado",                        +
+             "Alternador sin escobillas",                    +
+             "Refrigeracion por agua",                       +
+             "Parada de emergencia externa",                 +
+             "Carga de combustible",                         +
+             "Tablero digital COMAP",                        +
+             "Arranque automatico",                          +
+             "Precalentador disponible"                      +
+         ]                                                   +
+     }                                                       +
+ }
+
