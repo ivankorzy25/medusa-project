@@ -249,7 +249,7 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
           {/* Precio estilo MercadoLibre */}
           <div className="pb-5">
             {/* Precio anterior tachado - solo si hay descuento */}
-            {descuentoPorcentaje > 0 && (
+            {(descuentoPorcentaje ?? 0) > 0 && (
               <div className="mb-2">
                 <span className="text-[16px] font-normal" style={{
                   color: 'rgba(0, 0, 0, 0.55)',
@@ -258,7 +258,7 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
                 }}>
                   $ {formatARS(precioAnterior
                     ? Math.round(precioAnterior)
-                    : Math.round(data.escenarios.publico.con_iva / (1 - descuentoPorcentaje / 100))
+                    : Math.round(data.escenarios.publico.con_iva / (1 - (descuentoPorcentaje ?? 0) / 100))
                   )}
                 </span>
               </div>
@@ -274,7 +274,7 @@ export function PriceDisplay({ productId, priceUSD, pricingConfig, descuentoPorc
                 $ {formatARS(data.escenarios.publico.con_iva)}
               </span>
               {/* Descuento - solo si existe */}
-              {descuentoPorcentaje > 0 && (
+              {(descuentoPorcentaje ?? 0) > 0 && (
                 <span className="text-[18px] font-normal" style={{
                   color: 'rgb(76, 175, 80)',
                   fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif',

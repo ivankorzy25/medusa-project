@@ -100,7 +100,7 @@ export async function generateMetadata({
     openGraph: {
       title: product.title,
       description: product.description,
-      images: product.images.map((img) => img.url),
+      images: product.images.map((img: any) => img.url),
       type: "website",
     },
   }
@@ -147,7 +147,7 @@ export default async function ProductPage({
           <ScrollHijackingContainer
             imageContent={
               <ImageCarousel
-                images={product.images.map(img => ({
+                images={product.images.map((img: any) => ({
                   id: img.id,
                   url: img.url,
                   rank: 0

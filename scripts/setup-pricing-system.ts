@@ -208,8 +208,9 @@ async function main() {
     console.log(`${i + 1}. ${pl.title}`)
     console.log(`   Precio: USD ${(pl.prices[0].amount / 100).toLocaleString()}`)
     console.log(`   Grupo: ${pl.prices[0].rules.customer_group_id}`)
-    if (pl.prices[0].rules.payment_method) {
-      console.log(`   Método pago: ${pl.prices[0].rules.payment_method}`)
+    const rules = pl.prices[0].rules as any
+    if (rules.payment_method) {
+      console.log(`   Método pago: ${rules.payment_method}`)
     }
     console.log()
   })

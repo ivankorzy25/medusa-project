@@ -217,7 +217,7 @@ export function ProductInfoTabs({ description, metadata, variants, productHandle
                           { label: "Parada de emergencia", value: "Sí - externa" },
                         ].filter(item => item.value),
 
-                        dimensiones: [
+                        dimensiones: ([
                           // Largo - buscar primero en props, luego en metadata
                           {
                             label: "Largo total",
@@ -344,7 +344,7 @@ export function ProductInfoTabs({ description, metadata, variants, productHandle
                               return `${Math.ceil(pesoNum / 1000)} toneladas mínimo`;
                             })()
                           },
-                        ].filter(item => item.value),
+                        ] as Array<{ label: string; value: string | null }>).filter((item): item is { label: string; value: string } => item.value !== null),
 
                         garantia: [
                           { label: "Garantía oficial", value: metadata.garantia || "12 meses o 2400 horas" },
@@ -431,7 +431,7 @@ export function ProductInfoTabs({ description, metadata, variants, productHandle
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* DINÁMICO desde metadata.aplicaciones_industriales */}
-              {(metadata.aplicaciones_industriales && Array.isArray(metadata.aplicaciones_industriales)
+              {(metadata?.aplicaciones_industriales && Array.isArray(metadata.aplicaciones_industriales)
                 ? metadata.aplicaciones_industriales
                 : []
               ).map((app: any, index: number) => (
