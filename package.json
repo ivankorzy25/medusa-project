@@ -9,7 +9,12 @@
     "lint": "eslint",
     "backup": "bash scripts/backup/auto-backup.sh",
     "backup:watch": "bash scripts/backup/auto-watcher.sh",
-    "setup": "bash scripts/backup/setup-from-github.sh"
+    "setup": "bash scripts/backup/setup-from-github.sh",
+    "deploy": "bash deploy.sh",
+    "deploy:vercel": "vercel --prod",
+    "vercel:preview": "vercel",
+    "vercel:logs": "vercel logs",
+    "vercel:env": "vercel env ls"
   },
   "dependencies": {
     "@medusajs/js-sdk": "^2.11.2",
@@ -49,6 +54,7 @@
     "form-data": "^4.0.4",
     "postcss": "^8.5.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vercel": "^48.9.0"
   }
 }
