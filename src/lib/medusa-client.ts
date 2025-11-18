@@ -38,7 +38,7 @@ export async function getProductByHandle(handle: string, regionId: string = DEFA
     // Medusa v2 doesn't return metadata by default in store API
     // We need to fetch it separately using our custom API route that queries the database directly
     try {
-      const metadataResponse = await fetch(`http://localhost:3000/api/product-metadata/${product.id}`)
+      const metadataResponse = await fetch(`http://localhost:4444/api/product-metadata/${handle}`)
 
       if (metadataResponse.ok) {
         const data = await metadataResponse.json()
@@ -91,7 +91,7 @@ export async function getVariantPrice(variant: any) {
   // Fallback: Fetch price directly from database when calculated_price is null
   // This is needed because Medusa v2 Store API doesn't always return calculated_price
   try {
-    const priceResponse = await fetch(`http://localhost:3000/api/product-prices/${variant.id}`)
+    const priceResponse = await fetch(`http://localhost:4444/api/product-prices/${variant.id}`)
 
     if (priceResponse.ok) {
       const priceData = await priceResponse.json()

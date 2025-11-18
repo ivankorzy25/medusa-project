@@ -5,14 +5,44 @@ import { NextResponse } from 'next/server';
  * Usa DolarAPI.com - API pública y gratuita
  */
 export async function GET() {
+  // Valores de fallback actualizados
+  const fallbackRates = [
+    {
+      tipo: 'oficial',
+      compra: 1050.00,
+      venta: 1100.00,
+      fuente: 'Banco Nación (Fallback)',
+      ultima_actualizacion: new Date().toISOString(),
+    },
+    {
+      tipo: 'blue',
+      compra: 1180.00,
+      venta: 1200.00,
+      fuente: 'Dólar Blue (Fallback)',
+      ultima_actualizacion: new Date().toISOString(),
+    },
+    {
+      tipo: 'mep',
+      compra: 1140.00,
+      venta: 1160.00,
+      fuente: 'Dólar MEP (Fallback)',
+      ultima_actualizacion: new Date().toISOString(),
+    },
+  ];
+
   try {
     console.log('[API Route] Fetching exchange rates from DolarAPI.com');
 
-    // Obtener cotizaciones de DolarAPI.com
+    // Obtener cotizaciones de DolarAPI.com con timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
     const response = await fetch('https://dolarapi.com/v1/dolares', {
       cache: 'no-store',
-      next: { revalidate: 300 }, // Revalidar cada 5 minutos
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error(`DolarAPI error: ${response.status}`);
@@ -35,19 +65,15 @@ export async function GET() {
       data: exchangeRates,
     });
   } catch (error: any) {
-    console.error('[API Route] Error fetching exchange rates:', error);
+    console.error('[API Route] Error fetching exchange rates:', error.message);
+    console.log('[API Route] Using fallback exchange rates');
 
-    // Fallback con valores por defecto
+    // Devolver fallback con success: true para que calculate-price funcione
     return NextResponse.json({
-      success: false,
-      error: error.message || 'No se pudieron obtener las cotizaciones',
-      data: [{
-        tipo: 'oficial',
-        compra: 1015.50,
-        venta: 1055.50,
-        fuente: 'Fallback',
-        ultima_actualizacion: new Date().toISOString(),
-      }],
+      success: true,
+      data: fallbackRates,
+      fallback: true,
+      error_message: error.message,
     });
   }
 }

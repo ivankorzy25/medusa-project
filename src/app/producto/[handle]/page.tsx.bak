@@ -387,7 +387,7 @@ export default async function ProductPage({
                   </div>
                 )}
 
-{/* Características destacadas - Estilo MercadoLibre */}
+                {/* Características destacadas - Estilo MercadoLibre */}
                 <div className="space-y-1">
                   <h2 className="text-[16px] font-semibold mb-2" style={{
                     color: 'rgba(0, 0, 0, 0.9)',
@@ -401,78 +401,63 @@ export default async function ProductPage({
                     color: 'rgba(0, 0, 0, 0.8)',
                     fontFamily: '"Proxima Nova", -apple-system, Roboto, Arial, sans-serif'
                   }}>
-                    {/* Motor - desde nueva estructura */}
-                    {product.metadata?.motor?.motor_marca?.valor && product.metadata?.motor?.motor_modelo?.valor && (
-                      <li>• Motor {product.metadata.motor.motor_marca.valor} {product.metadata.motor.motor_modelo.valor}</li>
+                    {/* Motor */}
+                    {product.metadata.motor_marca && product.metadata.motor_modelo && (
+                      <li>• Motor {product.metadata.motor_marca} {product.metadata.motor_modelo}</li>
                     )}
 
-                    {/* Potencias - desde nueva estructura */}
-                    {product.metadata?.potencia?.potencia_standby_kva?.valor && (
-                      <li>• Potencia Stand-By: {product.metadata.potencia.potencia_standby_kva.valor} kVA {product.metadata?.potencia?.potencia_standby_kw?.valor && `(${product.metadata.potencia.potencia_standby_kw.valor} kW)`}</li>
+                    {/* Potencias */}
+                    {product.metadata.potencia_standby_kva && (
+                      <li>• Potencia Stand-By: {product.metadata.potencia_standby_kva} KVA{product.metadata.potencia_standby_kw && ` (${product.metadata.potencia_standby_kw} KW)`}</li>
                     )}
-                    {product.metadata?.potencia?.potencia_prime_kva?.valor && (
-                      <li>• Potencia Prime: {product.metadata.potencia.potencia_prime_kva.valor} kVA {product.metadata?.potencia?.potencia_prime_kw?.valor && `(${product.metadata.potencia.potencia_prime_kw.valor} kW)`}</li>
-                    )}
-
-                    {/* Alternador - desde nueva estructura */}
-                    {product.metadata?.alternador?.alternador_marca?.valor && (
-                      <li>• Alternador {product.metadata.alternador.alternador_marca.valor} {product.metadata?.alternador?.alternador_modelo?.valor || ''}</li>
+                    {product.metadata.potencia_prime_kva && (
+                      <li>• Potencia Prime: {product.metadata.potencia_prime_kva} KVA{product.metadata.potencia_prime_kw && ` (${product.metadata.potencia_prime_kw} KW)`}</li>
                     )}
 
-                    {/* Voltaje y Fases - desde nueva estructura */}
-                    {product.metadata?.alternador?.alternador_voltaje?.valor && (
-                      <li>• Voltaje: {product.metadata.alternador.alternador_voltaje.valor}V - {product.metadata?.alternador?.alternador_fases?.valor || 'Trifásico'}</li>
+                    {/* Alternador con modelo */}
+                    {product.metadata.alternador_marca && (
+                      <li>• Alternador {product.metadata.alternador_marca}{product.metadata.alternador_modelo && ` ${product.metadata.alternador_modelo}`}</li>
                     )}
 
-                    {/* Frecuencia */}
-                    {product.metadata?.alternador?.alternador_frecuencia?.valor && (
-                      <li>• Frecuencia: {product.metadata.alternador.alternador_frecuencia.valor} Hz</li>
+                    {/* Sistema eléctrico */}
+                    {product.metadata.voltaje_salida && (
+                      <li>• Voltaje: {product.metadata.voltaje_salida}{product.metadata.fases && ` - ${product.metadata.fases}`}</li>
+                    )}
+                    {product.metadata.frecuencia && (
+                      <li>• Frecuencia: {product.metadata.frecuencia}</li>
                     )}
 
-                    {/* Combustible - desde nueva estructura */}
-                    {product.metadata?.combustible?.combustible_tipo?.valor && (
-                      <li>• Tipo de alimentación: {product.metadata.combustible.combustible_tipo.valor}</li>
+                    {/* Combustible y autonomía */}
+                    {product.metadata.combustible_capacidad_tanque && (
+                      <li>• Capacidad de tanque: {product.metadata.combustible_capacidad_tanque} litros</li>
                     )}
-                    {product.metadata?.combustible?.combustible_tanque_capacidad?.valor && (
-                      <li>• Capacidad de tanque: {product.metadata.combustible.combustible_tanque_capacidad.valor} litros</li>
-                    )}
-                    {product.metadata?.combustible?.combustible_autonomia_75?.valor && (
-                      <li>• Autonomía al 75%: {product.metadata.combustible.combustible_autonomia_75.valor} horas</li>
-                    )}
-
-                    {/* Ruido - desde nueva estructura */}
-                    {product.metadata?.ruido_cabina?.ruido_nivel_db?.valor && (
-                      <li>• Nivel de ruido: {product.metadata.ruido_cabina.ruido_nivel_db.valor} dB a 7m</li>
-                    )}
-                    {product.metadata?.ruido_cabina?.cabina_tipo?.valor && (
-                      <li>• Cabina: {product.metadata.ruido_cabina.cabina_tipo.valor}</li>
-                    )}
-
-                    {/* Panel de control - desde nueva estructura */}
-                    {product.metadata?.panel_control?.panel_marca?.valor && (
-                      <li>• Panel de control {product.metadata.panel_control.panel_marca.valor} {product.metadata?.panel_control?.panel_modelo?.valor || ''}</li>
-                    )}
-                    {product.metadata?.panel_control?.panel_arranque_automatico?.valor && (
-                      <li>• Arranque automático en {product.metadata?.panel_control?.panel_tiempo_arranque?.valor || '10'} segundos</li>
+                    {product.metadata.autonomia_horas_75_carga && (
+                      <li>• Autonomía al 75% de carga: {product.metadata.autonomia_horas_75_carga} horas</li>
                     )}
 
                     {/* Motor técnico */}
-                    {product.metadata?.motor?.motor_cilindros?.valor && (
-                      <li>• Motor de {product.metadata.motor.motor_cilindros.valor} cilindros {product.metadata?.motor?.motor_disposicion?.valor || ''}</li>
+                    {product.metadata.motor_cilindros && (
+                      <li>• Motor de {product.metadata.motor_cilindros} cilindros{product.metadata.motor_tipo_cilindros && ` ${product.metadata.motor_tipo_cilindros}`}</li>
                     )}
-                    {product.metadata?.motor?.motor_aspiracion?.valor && (
-                      <li>• {product.metadata.motor.motor_aspiracion.valor}</li>
+                    {product.metadata.motor_aspiracion && (
+                      <li>• {product.metadata.motor_aspiracion}</li>
+                    )}
+                    {product.metadata.tipo_refrigeracion && (
+                      <li>• Refrigeración: {product.metadata.tipo_refrigeracion}</li>
                     )}
 
-                    {/* Fallback para metadata antigua */}
-                    {!product.metadata?.motor && product.metadata?.motor_marca && (
-                      <li>• Motor {product.metadata.motor_marca} {product.metadata.motor_modelo || ''}</li>
+                    {/* Panel de control */}
+                    {product.metadata.panel_control_marca && product.metadata.panel_control_modelo && (
+                      <li>• Panel de control {product.metadata.panel_control_marca} {product.metadata.panel_control_modelo}</li>
                     )}
-                    {!product.metadata?.potencia && product.metadata?.potencia_standby_kva && (
-                      <li>• Potencia Stand-By: {product.metadata.potencia_standby_kva} kVA</li>
+
+                    {/* Arranque */}
+                    {product.metadata.tipo_arranque && (
+                      <li>• Sistema de arranque: {product.metadata.tipo_arranque}</li>
                     )}
                   </ul>
                 </div>
+
                 <div className="pt-4 border-t border-gray-200">
                   <p className="text-xs" style={{
                     color: 'rgba(0, 0, 0, 0.45)',
