@@ -487,11 +487,22 @@ export default async function ProductPage({
               <PriceDisplay
                 productId={product.id}
                 priceUSD={product.priceWithoutTax}
-                pricingConfig={product.metadata.pricing_config}
+                pricingConfig={{
+                  precio_lista_usd: product.metadata?.precios?.precio_sin_iva?.valor || product.priceWithoutTax,
+                  iva_percentage: product.metadata?.precios?.precio_iva_porcentaje?.valor || 10.5,
+                  currency_type: "usd_oficial",
+                  bonificacion_percentage: 0,
+                  contado_descuento_percentage: 0,
+                  familia: product.metadata?.condiciones_comerciales?.categoria_comercial || "Generadores"
+                }}
                 descuentoPorcentaje={product.metadata.descuento_porcentaje}
                 precioAnterior={product.metadata.precio_anterior}
-                financiacionDisponible={product.metadata.financiacion_disponible}
-                planesFinanciacion={product.metadata.planes_financiacion}
+                financiacionDisponible={!!product.metadata?.precios?.financiacion?.valor}
+                planesFinanciacion={product.metadata?.precios?.financiacion?.valor ? [{
+                  cuotas: 4,
+                  interes: 0,
+                  costoPorCuota: Math.round((product.metadata?.precios?.precio_con_iva?.valor || 0) / 4)
+                }] : undefined}
                 stockCantidad={product.metadata.stock_cantidad}
                 stockDisponible={product.metadata.stock_disponible}
                 ubicacionEnvio={product.metadata.ubicacion_envio}
